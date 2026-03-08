@@ -1,0 +1,156 @@
+:host {
+  /* Usamos tus variables exactas del Login */
+  --blue: #145da0;
+  --blue-dark: #0b3d6e;
+  --teal: #2aada0;
+  --teal-rgb: 42, 173, 160;
+}
+
+.main-content {
+  --background: #ffffff;
+}
+
+/* Reutilizamos el gradiente de tu .hero */
+.hero-top {
+  position: relative;
+  background: linear-gradient(160deg, var(--blue-dark) 0%, var(--blue) 40%, var(--teal) 100%);
+  height: 200px;
+  padding-top: env(safe-area-inset-top);
+  overflow: hidden;
+
+  .header-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 24px;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Botones limpios estilo Login */
+  .clean-header-btn {
+    --background: #ffffff00;
+    --color: white;
+    --border-radius: 14px;
+    width: 46px;
+    height: 46px;
+    margin: 0;
+  }
+
+  .app-title {
+    color: #ffffff;
+    font-size: 1;
+    font-weight: 300;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+}
+
+/* Decoraciones del Login transferidas al Home */
+.hero-shapes .shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  background: #ffffff;
+}
+.s1 { width: 150px; height: 150px; top: -30px; right: -20px; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+.s2 { width: 80px; height: 80px; bottom: 60px; left: -10px; border-radius: 60% 40% 30% 70%; opacity: 0.05; }
+
+/* El panel blanco superpuesto */
+.card-panel {
+  position: relative;
+  margin-top: -120px;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
+  min-height: calc(100vh - 150px);
+  z-index: 5;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+
+  .card-inner {
+    padding: 40px 28px;
+    flex: 1;
+  }
+}
+
+/* Tipografías con los colores del Login */
+.welcome-text {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--blue-dark);
+  margin: 0;
+}
+
+.user-name {
+  font-size: 2.6rem;
+  font-weight: 300;
+  color: var(--blue);
+  margin: 0 0 35px;
+}
+
+.mission-section {
+  margin-bottom: 35px;
+  h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 10px;
+  }
+  p {
+    color: #64748b;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+}
+
+/* Estilo de bloques de información */
+.info-group {
+  margin-bottom: 25px;
+  .info-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    ion-icon { font-size: 1.5rem; margin-right: 10px; }
+    span { font-size: 1.2rem; font-weight: 700; }
+  }
+  p { font-size: 0.95rem; line-height: 1.4; margin: 0; }
+}
+
+.privacy {
+  color: var(--blue);
+  p { color: #334155; }
+}
+
+.notice {
+  color: #c47c2a; /* Mantenemos el naranja médico por seguridad visual */
+  p { color: #c47c2a; opacity: 0.9; }
+}
+
+/* Footer y Animaciones */
+.footer-copyright {
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  p { color: #c0c8d4; font-size: 12px; margin: 0; }
+}
+
+.bottom-cross {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 25px;
+  bottom: 20px;
+  opacity: 0.2;
+  .h-line { position: absolute; background: var(--teal); height: 4px; width: 100%; top: 8px; }
+  .v-line { position: absolute; background: var(--teal); width: 4px; height: 100%; left: 8px; }
+}
+
+.animate-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
