@@ -1,0 +1,360 @@
+/* ==========================================================================
+   AUTH PAGE — OVERLAPPING CARD STYLE
+   ========================================================================== */
+:host {
+  font-family: 'Quicksand', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --blue: #145da0;
+  --blue-dark: #0b3d6e;
+  --blue-rgb: 20, 93, 160;
+  --teal: #2aada0;
+  --teal-rgb: 42, 173, 160;
+}
+
+ion-content {
+  --background: #ffffff;
+}
+
+/* ==========================================================================
+   HERO (Parte superior con color)
+   ========================================================================== */
+.hero {
+  position: relative;
+  background: linear-gradient(160deg, var(--blue-dark) 0%, var(--blue) 40%, var(--teal) 100%);
+  padding: 50px 28px 90px;
+  overflow: hidden;
+}
+
+/* Formas decorativas en el hero */
+.hero-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  background: #ffffff;
+}
+
+.s1 {
+  width: 180px;
+  height: 180px;
+  top: -40px;
+  right: -30px;
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.s2 {
+  width: 100px;
+  height: 100px;
+  bottom: 40px;
+  right: 30px;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  opacity: 0.07;
+}
+
+/* Contenido del hero */
+.hero-text {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-logo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.hero-text p {
+  color: rgba(255,255,255,0.7);
+  font-size: 15px;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* ==========================================================================
+   PANEL BLANCO SUPERPUESTO
+   ========================================================================== */
+.card-panel {
+  position: relative;
+  margin-top: -50px;
+  background: #ffffff;
+  border-radius: 40px 40px 0 0;
+  min-height: calc(100vh - 210px);
+  z-index: 5;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.06);
+}
+
+.card-inner {
+  padding: 50px 28px 30px;
+  max-width: 420px;
+  margin: 0 auto;
+
+  h2 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 28px;
+    text-align: center;
+    letter-spacing: -0.5px;
+  }
+}
+
+/* ==========================================================================
+   INPUTS LIMPIOS
+   ========================================================================== */
+.input-group {
+  margin-bottom: 20px;
+
+  .helper {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--teal);
+    margin-top: 6px;
+    padding-left: 18px;
+  }
+}
+
+.clean-input {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 20px;
+  background: #f8fafc;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 18px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.01);
+
+  &:focus-within {
+    background: #ffffff;
+    border-color: var(--blue);
+    box-shadow: 0 4px 12px rgba(var(--blue-rgb), 0.08), inset 0 2px 4px rgba(0, 0, 0, 0);
+    transform: translateY(-1px);
+  }
+
+  &.tap {
+    cursor: pointer;
+  }
+
+  ion-icon {
+    font-size: 22px;
+    color: #94a3b8;
+    margin-right: 14px;
+    flex-shrink: 0;
+    transition: color 0.3s;
+  }
+
+  &:focus-within ion-icon {
+    color: var(--blue);
+  }
+
+  .trail {
+    font-size: 16px;
+    margin-right: 0;
+    margin-left: auto;
+    color: #94a3b8;
+  }
+
+  ion-input {
+    --color: #0f172a;
+    --placeholder-color: #94a3b8;
+    font-size: 16px;
+    font-weight: 500;
+    --padding-start: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+}
+
+/* ==========================================================================
+   BOTÓN Y ENLACES
+   ========================================================================== */
+.forgot {
+  display: block;
+  text-align: right;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  margin: -6px 0 18px;
+  cursor: pointer;
+  &:active { color: var(--blue); }
+}
+
+.primary-btn, .action-btn {
+  --background: var(--blue);
+  --background-activated: var(--blue-dark);
+  --border-radius: 18px;
+  --box-shadow: 0 8px 24px rgba(var(--blue-rgb), 0.25);
+  height: 56px;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:active {
+    transform: scale(0.97);
+    --box-shadow: 0 4px 12px rgba(var(--blue-rgb), 0.3);
+  }
+}
+
+.switch {
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+  margin: 22px 0 0;
+
+  a {
+    color: var(--blue);
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    &:active { color: var(--teal); }
+  }
+}
+
+/* ==========================================================================
+   REDES SOCIALES (Social Login)
+   ========================================================================== */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 28px 0 20px;
+  
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1.5px solid #f1f5f9;
+  }
+  
+  span {
+    padding: 0 14px;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
+
+.social-logins {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1.5px solid #f1f5f9;
+  color: #0f172a;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 24px;
+  }
+
+  &.fb ion-icon { color: #1877F2; }
+  &.google ion-icon { color: #DB4437; }
+  &.apple ion-icon { color: #000000; }
+
+  &:active {
+    transform: scale(0.92);
+    background: #f8fafc;
+    border-color: #e2e8f0;
+  }
+}
+
+.copyright {
+  text-align: center;
+  color: #c0c8d4;
+  font-size: 11px;
+  margin: 28px 0 0;
+}
+
+/* Decoraciones de fondo (Bottom White Panel) */
+.bottom-decorations {
+  position: absolute;
+  inset: 0;
+  border-radius: 40px 40px 0 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.bg-icon {
+  position: absolute;
+  color: rgba(var(--blue-rgb), 0.03);
+}
+
+.bi-1 {
+  font-size: 140px;
+  bottom: -20px;
+  left: -30px;
+  transform: rotate(-15deg);
+}
+
+.bi-2 {
+  font-size: 180px;
+  top: 40%;
+  right: -60px;
+  transform: rotate(10deg);
+  opacity: 0.02;
+}
+
+.bottom-cross {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: 10%;
+  right: 15%;
+  animation: floatSlow 8s ease-in-out infinite alternate;
+
+  .h-line, .v-line {
+    position: absolute;
+    background: rgba(var(--teal-rgb), 0.08);
+    border-radius: 2px;
+  }
+  .h-line { height: 6px; width: 100%; top: 50%; transform: translateY(-50%); }
+  .v-line { width: 6px; height: 100%; left: 50%; transform: translateX(-50%); }
+}
+
+@keyframes floatSlow {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-15px) rotate(15deg); }
+}
+
+/* ==========================================================================
+   ANIMACIONES
+   ========================================================================== */
+.animate-in {
+  animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal styles are in global.scss (Ionic renders modals outside the component) */

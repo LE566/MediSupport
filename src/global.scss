@@ -9,6 +9,18 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
+/* ==========================================================================
+   GLOBAL VARIABLES PARA SOBRESCRIBIR IONIC
+   ========================================================================== */
+:root {
+  /* Forzamos Poppins en todas las fuentes por defecto de Ionic */
+  --ion-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif !important;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif !important;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 
@@ -35,3 +47,99 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* MODAL DE ROL */
+.role-modal {
+  --border-radius: 24px 24px 0 0;
+  --box-shadow: 0 -8px 30px rgba(0,0,0,0.08);
+
+  ion-content {
+    --background: #ffffff !important;
+    --color: #0f172a;
+  }
+
+  .modal-body {
+    padding-top: 4px;
+
+    h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #145da0 !important;
+      margin: 0 0 4px;
+      text-align: center;
+    }
+  }
+
+  .modal-desc {
+    font-size: 14px;
+    color: #64748b;
+    text-align: center;
+    margin: 0 0 20px;
+  }
+
+  .drag-handle {
+    width: 36px;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    margin: 0 auto 20px;
+  }
+
+  .role-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+
+    .role-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      ion-icon { font-size: 22px; }
+      &.blue {
+        background: rgba(20, 93, 160, 0.1);
+        ion-icon { color: #145da0; }
+      }
+      &.teal {
+        background: rgba(42, 173, 160, 0.1);
+        ion-icon { color: #2aada0; }
+      }
+    }
+
+    .role-info {
+      flex: 1;
+      h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 2px; }
+      p { font-size: 12px; color: #64748b; margin: 0; line-height: 1.35; }
+    }
+
+    .check {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 24px;
+      color: #145da0;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.25s ease;
+    }
+
+    &.selected {
+      border-color: #145da0;
+      background: rgba(20, 93, 160, 0.04);
+      box-shadow: 0 4px 12px rgba(20, 93, 160, 0.08);
+
+      .check { opacity: 1; transform: scale(1); }
+      .role-info h4 { color: #145da0; }
+    }
+  }
+}
