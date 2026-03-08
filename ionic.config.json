@@ -1,0 +1,7 @@
+{
+  "name": "MediSupport+",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
