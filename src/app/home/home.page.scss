@@ -27,14 +27,19 @@
     z-index: 10;
   }
 
-  /* Botones limpios estilo Login */
   .clean-header-btn {
     --background: #ffffff00;
     --color: white;
     --border-radius: 14px;
+    --box-shadow: none;
     width: 46px;
     height: 46px;
     margin: 0;
+
+    /* 👇 Agrega esto para controlar el tamaño exacto del ícono */
+    ion-icon {
+      font-size: 24px; /* Ajusta este valor (20px, 22px o 24px) hasta que quede idéntico a tu Home */
+    }
   }
 
   .app-title {
