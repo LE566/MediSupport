@@ -25,6 +25,10 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
   },
+  {
+    path: 'cancer-classifier',
+    loadComponent: () => import('./pages/cancer-classifier/cancer-classifier.page').then( m => m.CancerClassifierPage)
+  },
 
 
 ];
