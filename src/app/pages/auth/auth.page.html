@@ -1,15 +1,10 @@
 <ion-content [scrollY]="false">
 
-  <!-- Hero azul superior -->
   <div class="hero">
-
-    <!-- Formas de Blobs orgánicos -->
     <div class="hero-shapes">
       <div class="shape s1"></div>
       <div class="shape s2"></div>
     </div>
-
-    <!-- Contenido del hero -->
     <div class="hero-text ion-text-start">
       <img src="../../../assets/logo.png" alt="Logo" class="hero-logo" />
       <h1>Hello!</h1>
@@ -17,7 +12,6 @@
     </div>
   </div>
 
-  <!-- Panel blanco superpuesto -->
   <div class="card-panel">
     <div class="card-inner">
 
@@ -28,21 +22,21 @@
           <div class="input-group">
             <div class="clean-input">
               <ion-icon name="mail-outline"></ion-icon>
-              <ion-input type="email" placeholder="Email Address"></ion-input>
+              <ion-input type="email" placeholder="Email Address" [(ngModel)]="email"></ion-input>
             </div>
           </div>
 
           <div class="input-group">
             <div class="clean-input">
               <ion-icon name="lock-closed-outline"></ion-icon>
-              <ion-input type="password" placeholder="Password"></ion-input>
+              <ion-input type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
             </div>
           </div>
 
           <a class="forgot">Forgot Password?</a>
 
-          <ion-button expand="block" class="action-btn">
-            Login
+          <ion-button expand="block" class="action-btn" (click)="doLogin()" [disabled]="isLoading()">
+            {{ isLoading() ? 'Signing in...' : 'Login' }}
           </ion-button>
 
           <p class="switch">Don't have an account? <a (click)="toggleAuthMode()">Sign Up</a></p>
@@ -62,7 +56,7 @@
           <div class="input-group">
             <div class="clean-input">
               <ion-icon name="person-outline"></ion-icon>
-              <ion-input type="text" placeholder="Full Name"></ion-input>
+              <ion-input type="text" placeholder="Full Name" [(ngModel)]="fullName"></ion-input>
             </div>
           </div>
 
@@ -70,7 +64,7 @@
             <div class="input-group animate-in">
               <div class="clean-input">
                 <ion-icon name="id-card-outline"></ion-icon>
-                <ion-input type="number" placeholder="Medical License Number"></ion-input>
+                <ion-input type="text" placeholder="Medical License Number" [(ngModel)]="medicalLicense"></ion-input>
               </div>
               <span class="helper">We will verify your license</span>
             </div>
@@ -79,19 +73,19 @@
           <div class="input-group">
             <div class="clean-input">
               <ion-icon name="mail-outline"></ion-icon>
-              <ion-input type="email" placeholder="Email Address"></ion-input>
+              <ion-input type="email" placeholder="Email Address" [(ngModel)]="email"></ion-input>
             </div>
           </div>
 
           <div class="input-group">
             <div class="clean-input">
               <ion-icon name="lock-closed-outline"></ion-icon>
-              <ion-input type="password" placeholder="Password"></ion-input>
+              <ion-input type="password" placeholder="Password" [(ngModel)]="password"></ion-input>
             </div>
           </div>
 
-          <ion-button expand="block" class="action-btn">
-            Sign Up
+          <ion-button expand="block" class="action-btn" (click)="doRegister()" [disabled]="isLoading()">
+            {{ isLoading() ? 'Creating account...' : 'Sign Up' }}
           </ion-button>
 
           <p class="switch">Already have an account? <a (click)="toggleAuthMode()">Sign In</a></p>
@@ -101,7 +95,6 @@
       <p class="copyright">© 2026 MediSupport+</p>
     </div>
 
-    <!-- Decoraciones del fondo blanco (abajo) -->
     <div class="bottom-decorations">
       <ion-icon name="medkit" class="bg-icon bi-1"></ion-icon>
       <ion-icon name="pulse" class="bg-icon bi-2"></ion-icon>
@@ -111,7 +104,6 @@
     </div>
   </div>
 
-  <!-- Modal de rol -->
   <ion-modal [isOpen]="isRoleModalOpen()" (ionModalDidDismiss)="isRoleModalOpen.set(false)"
     [initialBreakpoint]="0.45" [breakpoints]="[0, 0.45, 0.6]" class="role-modal">
     <ng-template>
