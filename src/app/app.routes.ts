@@ -17,6 +17,14 @@ export const routes: Routes = [
   {
     path: 'appointmentsDoc',
     loadComponent: () => import('./pages/appointments-doc/appointments-doc.page').then( m => m.AppointmentsDocPage)
+  },  {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile/profile.page').then( m => m.ProfilePage)
   },
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings.page').then( m => m.SettingsPage)
+  },
+
 
 ];

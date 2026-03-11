@@ -1,0 +1,122 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="main-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/profile" color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="settings-content">
+  <div class="settings-wrapper ion-padding">
+
+    <div class="section-title">
+      <ion-icon name="color-palette-outline"></ion-icon>
+      <span>Appearance</span>
+    </div>
+
+    <div class="settings-group">
+      <ion-item lines="none" class="settings-item">
+        <ion-icon name="moon-outline" slot="start" class="icon-blue"></ion-icon>
+        <ion-label>
+          <h2>Dark Mode</h2>
+          <p>{{ darkMode ? 'On' : 'Follow system' }}</p>
+        </ion-label>
+        <ion-toggle [(ngModel)]="darkMode" (ionChange)="toggleDarkMode()" slot="end"></ion-toggle>
+      </ion-item>
+
+      <ion-item lines="none" class="settings-item" button="true" (click)="changeTextSize()">
+        <ion-icon name="text-outline" slot="start" class="icon-blue"></ion-icon>
+        <ion-label>
+          <h2>Text Size</h2>
+          <p>{{ textSizeLabel }}</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end" class="chevron-icon"></ion-icon>
+      </ion-item>
+    </div>
+
+    <div class="section-title">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <span>Appointments & Calendar</span>
+    </div>
+
+    <div class="settings-group">
+      <ion-item lines="none" class="settings-item">
+        <ion-icon name="sync-outline" slot="start" class="icon-teal"></ion-icon>
+        <ion-label>
+          <h2>Sync with Device</h2>
+          <p>Add appointments to local calendar</p>
+        </ion-label>
+        <ion-toggle [(ngModel)]="syncCalendar" (ionChange)="savePreference('medisupport_sync', syncCalendar)" slot="end"></ion-toggle>
+      </ion-item>
+
+      <ion-item lines="none" class="settings-item" button="true" (click)="changeReminderTime()">
+        <ion-icon name="notifications-outline" slot="start" class="icon-teal"></ion-icon>
+        <ion-label>
+          <h2>Default Reminder</h2>
+          <p>{{ reminderTimeLabel }}</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end" class="chevron-icon"></ion-icon>
+      </ion-item>
+    </div>
+
+    <div class="section-title">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <span>Data & Security</span>
+    </div>
+
+    <div class="settings-group">
+      <ion-item lines="none" class="settings-item" button="true" (click)="exportData()">
+        <ion-icon name="download-outline" slot="start" class="icon-blue"></ion-icon>
+        <ion-label>
+          <h2>Export Medical Records</h2>
+          <p>Download your history as PDF/CSV</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end" class="chevron-icon"></ion-icon>
+      </ion-item>
+
+      <ion-item lines="none" class="settings-item" button="true" (click)="clearCache()">
+        <ion-icon name="trash-outline" slot="start" class="icon-blue"></ion-icon>
+        <ion-label>
+          <h2>Clear App Cache</h2>
+          <p>Free up storage space</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end" class="chevron-icon"></ion-icon>
+      </ion-item>
+
+      <ion-item lines="none" class="settings-item" button="true" (click)="resetSettings()">
+        <ion-icon name="refresh-outline" slot="start" class="icon-blue"></ion-icon>
+        <ion-label>
+          <h2>Reset All Settings</h2>
+          <p>Restore default preferences</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end" class="chevron-icon"></ion-icon>
+      </ion-item>
+    </div>
+
+    <div class="section-title">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <span>About</span>
+    </div>
+
+    <div class="settings-group">
+      <ion-item lines="none" class="settings-item">
+        <ion-icon name="medical-outline" slot="start" class="icon-teal"></ion-icon>
+        <ion-label>
+          <h2>MediSupport+</h2>
+          <p>Version 1.0.0 · Build 2026</p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item lines="none" class="settings-item" button="true" (click)="showAbout()">
+        <ion-icon name="heart-outline" slot="start" class="icon-teal"></ion-icon>
+        <ion-label>
+          <h2>About MediSupport+</h2>
+          <p>Improving healthcare management</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline" slot="end" class="chevron-icon"></ion-icon>
+      </ion-item>
+    </div>
+
+  </div>
+</ion-content>

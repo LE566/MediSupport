@@ -1,0 +1,111 @@
+:host {
+  --blue: #145da0;
+  --blue-dark: #0b3d6e;
+  --teal: #2aada0;
+  --teal-rgb: 42, 173, 160;
+}
+
+.main-header {
+  --background: rgba(255, 255, 255, 0.95);
+  --border-style: none;
+  backdrop-filter: blur(20px);
+
+  ion-title {
+    font-weight: 700;
+    color: var(--blue-dark);
+  }
+}
+
+.settings-content {
+  --background: #f8fafc; /* Fondo un poco más limpio para la app médica */
+}
+
+.settings-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 5px 10px;
+
+  ion-icon {
+    font-size: 1.1rem;
+    color: var(--blue-dark);
+    opacity: 0.8;
+  }
+
+  span {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--blue-dark);
+    opacity: 0.8;
+  }
+}
+
+.settings-group {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(var(--teal-rgb), 0.08);
+}
+
+.settings-item {
+  --background: transparent;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  min-height: 65px;
+
+  /* Estilos alternos para los íconos según la sección */
+  .icon-blue {
+    color: var(--blue);
+    background: rgba(20, 93, 160, 0.08);
+  }
+
+  .icon-teal {
+    color: var(--teal);
+    background: rgba(var(--teal-rgb), 0.12);
+  }
+
+  ion-icon[slot="start"] {
+    font-size: 22px;
+    margin-right: 14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    padding: 8px;
+  }
+
+  h2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--blue-dark);
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .chevron-icon {
+    font-size: 18px;
+    color: var(--blue);
+    opacity: 0.4;
+  }
+
+  & + .settings-item {
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+  }
+}
+
+ion-toggle {
+  --background-checked: var(--teal);
+}
