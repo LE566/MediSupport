@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
   IonContent,
-  IonIcon, IonButton, IonDatetime 
+  IonIcon, IonButton, IonDatetime, MenuController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -12,6 +12,7 @@ import {
   checkmarkOutline, 
   closeOutline 
 } from 'ionicons/icons';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-appointments-doc',
@@ -21,11 +22,12 @@ import {
   imports: [
     IonContent,
     CommonModule, FormsModule,
-    IonIcon, IonButton, IonDatetime
+    IonIcon, IonButton, IonDatetime, RouterLink,
   ]
 })
 export class AppointmentsDocPage implements OnInit {
   
+  private menuCtrl = inject(MenuController);
   // Colores exactos de tu CSS para resaltar los días
   highlightedDates = [
     {
@@ -71,6 +73,10 @@ export class AppointmentsDocPage implements OnInit {
 
   ngOnInit() {
     // Lógica al iniciar la página (vacío por ahora)
+  }
+
+  openMenu() {
+    this.menuCtrl.open('main-menu');
   }
 
   acceptRequest(id: number) {

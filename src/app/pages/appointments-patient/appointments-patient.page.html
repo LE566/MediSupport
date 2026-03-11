@@ -1,0 +1,105 @@
+<ion-content class="main-content">
+  <div class="hero-top">
+    <div class="hero-shapes">
+      <div class="shape s1"></div>
+      <div class="shape s2"></div>
+    </div>
+
+    <div class="header-navbar">
+      <ion-button class="clean-header-btn" (click)="openMenu()">
+        <ion-icon slot="icon-only" name="menu-outline"></ion-icon>
+      </ion-button>
+      
+      <h1 class="app-title">MediSupport+</h1>
+
+      <ion-button class="clean-header-btn" routerLink="/profile" routerDirection="forward">
+        <ion-icon slot="icon-only" name="person-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+  <div class="card-panel">
+    <div class="card-inner animate-in">
+      
+      <header class="page-header">
+        <h1 class="title-primary">My doctor</h1>
+        <h2 class="title-secondary">Appointments</h2>
+      </header>
+
+      <section class="mission-section">
+        <h3>Calendar</h3>
+        <div class="calendar-wrapper">
+          <ion-datetime 
+            presentation="date" 
+            [highlightedDates]="highlightedDates"
+            locale="en-US">
+          </ion-datetime>
+        </div>
+      </section>
+
+      <section class="mission-section">
+        <h3>Current Appointments</h3>
+        <div class="requests-list">
+          @for (appt of myAppointments; track appt.id) {
+            <div class="appointment-card">
+              
+              <div class="patient-avatar">
+                <span>{{ appt.initial }}</span>
+              </div>
+              
+              <div class="appt-details">
+                <h4>{{ appt.doctorName }}</h4>
+                <p class="datetime">{{ appt.date }} | {{ appt.time }}</p>
+                <p class="reason">{{ appt.specialty }}</p>
+                
+                <div class="status-badge" [ngClass]="appt.status">
+                  <ion-icon [name]="getStatusIcon(appt.status)"></ion-icon>
+                  <span>{{ appt.status | titlecase }}</span>
+                </div>
+              </div>
+
+              @if (appt.status !== 'denied') {
+                <div class="appt-actions">
+                  <ion-button class="action-btn cancel" (click)="cancelAppointment(appt.id)">
+                    <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+                  </ion-button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="mission-section">
+        <h3>History</h3>
+        <div class="requests-list">
+          @for (appt of pastAppointments; track appt.id) {
+            <div class="appointment-card past">
+              <div class="patient-avatar">
+                <span>{{ appt.initial }}</span>
+              </div>
+              <div class="appt-details">
+                <h4>{{ appt.doctorName }}</h4>
+                <p class="datetime">{{ appt.date }} | {{ appt.time }}</p>
+                <p class="reason">{{ appt.specialty }}</p>
+                <div class="status-badge completed">
+                  <ion-icon name="checkmark-circle-outline"></ion-icon>
+                  <span>Completed</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="footer-copyright">
+      <p>© 2026 MediSupport+</p>
+      <div class="bottom-cross">
+        <div class="h-line"></div>
+        <div class="v-line"></div>
+      </div>
+    </footer>
+  </div>
+</ion-content>

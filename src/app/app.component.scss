@@ -1,0 +1,41 @@
+.menu-content {
+  --background: #f8fafc;
+}
+
+.menu-header {
+  background: linear-gradient(160deg, #0b3d6e 0%, #145da0 100%);
+  padding: 40px 20px 20px;
+  color: white;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0 0 5px;
+  }
+  p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin: 0;
+  }
+}
+
+.menu-items {
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .menu-btn {
+    --color: #0b3d6e;
+    font-weight: 600;
+    text-transform: none;
+    font-size: 1.1rem;
+    justify-content: flex-start;
+    height: 50px;
+    
+    ion-icon {
+      color: #2aada0;
+      margin-right: 15px;
+    }
+  }
+}

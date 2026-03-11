@@ -6,13 +6,13 @@
     </div>
 
     <div class="header-navbar">
-      <ion-button class="clean-header-btn">
+      <ion-button class="clean-header-btn" (click)="openMenu()">
         <ion-icon slot="icon-only" name="menu-outline"></ion-icon>
       </ion-button>
       
       <h1 class="app-title">MediSupport+</h1>
 
-      <ion-button class="clean-header-btn">
+      <ion-button class="clean-header-btn" routerLink="/profile" routerDirection="forward">
         <ion-icon slot="icon-only" name="person-outline"></ion-icon>
       </ion-button>
     </div>

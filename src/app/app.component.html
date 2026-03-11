@@ -1,3 +1,31 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  
+  <ion-menu menuId="main-menu" contentId="main-content" side="start">
+    <ion-content class="menu-content">
+      <div class="menu-header">
+        <h2>MediSupport+</h2>
+        <p>Menu Principal</p>
+      </div>
+
+      <div class="menu-items">
+        <ion-button fill="clear" class="menu-btn" routerLink="/home" (click)="closeMenu()">
+          <ion-icon slot="start" name="home-outline"></ion-icon>
+          Inicio
+        </ion-button>
+
+        <ion-button fill="clear" class="menu-btn" routerLink="/appointmentsPatient" (click)="closeMenu()">
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          Mis Citas
+        </ion-button>
+
+        <ion-button fill="clear" class="menu-btn" routerLink="/profile" (click)="closeMenu()">
+          <ion-icon slot="start" name="person-outline"></ion-icon>
+          Mi Perfil
+        </ion-button>
+      </div>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+
 </ion-app>
