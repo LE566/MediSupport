@@ -30,6 +30,8 @@ export const routes: Routes = [
     path: 'appointmentsPatient',
     loadComponent: () => import('./pages/appointments-patient/appointments-patient.page').then( m => m.AppointmentsPatientPage)
   },
-
-
+  {
+    path: 'cancer-classifier',
+    loadComponent: () => import('./pages/cancer-classifier/cancer-classifier.page').then( m => m.CancerClassifierPage)
+  },
 ];

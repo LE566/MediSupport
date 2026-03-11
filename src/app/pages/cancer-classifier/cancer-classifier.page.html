@@ -1,0 +1,184 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="main-header">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard" color="primary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>AI Classifier</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="classifier-content">
+  <div class="container wrapper-padding">
+    
+    @if (!serverAvailable) {
+      <div class="server-alert">
+        <ion-icon name="warning-outline" class="alert-icon"></ion-icon>
+        <p>Analysis server is unavailable. Showing demo results.</p>
+      </div>
+    }
+
+    <div class="progress-indicator">
+      <div class="progress-step" [class.active]="showPatientForm" [class.completed]="showImageSection || showResults">
+        <div class="step-number"><ion-icon name="person"></ion-icon></div>
+        <span>Data</span>
+      </div>
+      <div class="progress-line" [class.active]="showImageSection || showResults"></div>
+      <div class="progress-step" [class.active]="showImageSection" [class.completed]="showResults">
+        <div class="step-number"><ion-icon name="image"></ion-icon></div>
+        <span>Upload</span>
+      </div>
+      <div class="progress-line" [class.active]="showResults"></div>
+      <div class="progress-step" [class.active]="showResults">
+        <div class="step-number"><ion-icon name="bar-chart"></ion-icon></div>
+        <span>Results</span>
+      </div>
+    </div>
+
+    @if (showPatientForm) {
+      <div class="card-panel animate-in">
+        <div class="section-title">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>Patient Data</span>
+        </div>
+        
+        <form (ngSubmit)="continueToImageUpload()">
+          <div class="input-group">
+            <ion-item lines="none" class="custom-item">
+              <ion-icon name="person-outline" slot="start" class="icon-blue"></ion-icon>
+              <ion-input label="Full Name *" labelPlacement="stacked" [(ngModel)]="patientData.name" name="name" placeholder="Enter full name" required></ion-input>
+            </ion-item>
+
+            <ion-item lines="none" class="custom-item">
+              <ion-icon name="id-card-outline" slot="start" class="icon-blue"></ion-icon>
+              <ion-input label="ID Number *" labelPlacement="stacked" [(ngModel)]="patientData.id" name="id" placeholder="Enter ID number" required></ion-input>
+            </ion-item>
+
+            <ion-item lines="none" class="custom-item">
+              <ion-icon name="calendar-outline" slot="start" class="icon-teal"></ion-icon>
+              <ion-input type="number" label="Age *" labelPlacement="stacked" [(ngModel)]="patientData.age" name="age" placeholder="Age" min="1" max="120" required></ion-input>
+            </ion-item>
+
+            <ion-item lines="none" class="custom-item">
+              <ion-icon name="body-outline" slot="start" class="icon-teal"></ion-icon>
+              <ion-select label="Studied Breast *" labelPlacement="stacked" [(ngModel)]="patientData.breastSide" name="breastSide" placeholder="Select side" required>
+                @for (side of breastSides; track side.value) {
+                  <ion-select-option [value]="side.value">{{ side.label }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+
+            <ion-item lines="none" class="custom-item textarea-item">
+              <ion-icon name="document-text-outline" slot="start" class="icon-blue"></ion-icon>
+              <ion-textarea label="Clinical Notes" labelPlacement="stacked" [(ngModel)]="patientData.clinicalNotes" name="clinicalNotes" placeholder="Symptoms, reasons for study..." rows="3" autoGrow="true"></ion-textarea>
+            </ion-item>
+          </div>
+
+          <ion-button type="submit" expand="block" [disabled]="!isPatientDataValid()" class="primary-btn">
+            Continue to Upload
+            <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+          </ion-button>
+        </form>
+      </div>
+    }
+
+    @if (showImageSection) {
+      <div class="card-panel animate-in">
+        <div class="section-title">
+          <ion-icon name="cloud-upload-outline"></ion-icon>
+          <span>Upload Mammogram</span>
+        </div>
+        <p class="subtitle-text">{{ patientData.name }} | {{ patientData.breastSide }}</p>
+        
+        <div class="upload-area" (click)="selectImage()" (dragover)="onDragOver($event)" (drop)="onDrop($event)" (dragleave)="onDragLeave($event)" [class.active]="isDragOver">
+          <ion-icon name="image-outline" class="upload-icon"></ion-icon>
+          <p class="upload-text">Drag a PNG image here or click to select</p>
+        </div>
+
+        @if (imagePreview) {
+          <div class="image-preview">
+            <img [src]="imagePreview" alt="Preview" class="preview-img">
+          </div>
+        }
+
+        <div class="button-group ion-margin-top">
+          <ion-button (click)="analyzeImage()" [disabled]="!selectedImage || analyzing" expand="block" class="primary-btn teal-btn">
+            @if (!analyzing) { <ion-icon name="analytics-outline" slot="start"></ion-icon> }
+            @if (analyzing) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
+            {{ analyzing ? 'Analyzing...' : 'Analyze with AI' }}
+          </ion-button>
+          
+          <div class="secondary-buttons">
+            <ion-button (click)="backToPatientForm()" fill="outline" class="outline-btn">Back</ion-button>
+            <ion-button (click)="clearAll()" fill="outline" color="danger" class="outline-btn-danger">Cancel</ion-button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (showResults) {
+      <div class="card-panel animate-in">
+        <div class="section-title">
+          <ion-icon name="bar-chart-outline"></ion-icon>
+          <span>Analysis Results</span>
+        </div>
+
+        <div class="result-display" [ngClass]="{
+          'benign': result?.classification === 'Benign' || result?.classification === 'Benigno', 
+          'malignant': result?.classification === 'Malignant' || result?.classification === 'Maligno'
+        }">
+          <ion-icon [name]="getResultIcon()" class="result-icon"></ion-icon>
+          <h2 class="result-text">{{ getResultText() }}</h2>
+          <p class="result-description">{{ getResultDescription() }}</p>
+        </div>
+
+
+
+        <div class="recommendations">
+          <div class="section-title">
+            <ion-icon name="medical-outline"></ion-icon>
+            <span>Recommendations</span>
+          </div>
+          <div [innerHTML]="getRecommendations()" class="recommendation-content"></div>
+        </div>
+
+        <div class="button-group ion-margin-top">
+          <ion-button (click)="newAnalysis()" expand="block" class="primary-btn">New Analysis</ion-button>
+        </div>
+      </div>
+    }
+
+    <div class="card-panel">
+      <div class="section-title">
+        <ion-icon name="time-outline"></ion-icon>
+        <span>Recent History</span>
+      </div>
+
+      @if (history.length > 0) {
+        <div class="history-list">
+          @for (item of history; track item.date) {
+            <div class="history-item">
+              <img [src]="item.image" alt="Mammogram" class="history-img">
+              <div class="history-details">
+                <strong>{{ item.patientName }}</strong>
+                <span>{{ item.date | date:'MM/dd/yyyy' }} | {{ item.breastSide }}</span>
+                <span class="confidence">Confidence: {{ item.confidence.toFixed(1) }}%</span>
+              </div>
+              <div class="history-badge" [ngClass]="{
+                'benign': item.classification === 'Benign' || item.classification === 'Benigno', 
+                'malignant': item.classification === 'Malignant' || item.classification === 'Maligno'
+              }">
+                {{ item.classification }}
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <ion-icon name="document-text-outline"></ion-icon>
+          <p>No previous analyses</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</ion-content>
