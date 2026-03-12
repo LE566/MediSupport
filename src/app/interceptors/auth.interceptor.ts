@@ -6,7 +6,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getToken();
 
-  // Si hay un token, clonamos la petición y le pegamos el Header de Autorización
+  // 1. Excepción para Cloudinary: No enviamos el token de Python a servidores externos
+  if (req.url.includes('cloudinary.com')) {
+    return next(req);
+  }
+
+  // 2. Si tenemos un token, clonamos la petición y le pegamos el Header de Autorización
   if (token) {
     const clonedRequest = req.clone({
       setHeaders: {
@@ -16,6 +21,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(clonedRequest);
   }
 
-  // Si no hay token, la petición pasa normal
+  // 3. Si no hay token o no es una ruta protegida, la petición sigue su curso normal
   return next(req);
 };

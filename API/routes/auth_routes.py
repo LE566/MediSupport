@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token
-from models.user_model import create_user, find_user_by_email, getUsers
 from utils.password_utils import hash_password, check_password
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from models.user_model import create_user, find_user_by_email, getUsers, update_user_profile
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -17,7 +17,8 @@ def register():
         "fullName": data["fullName"],
         "email": data["email"],
         "password": hash_password(data["password"]),
-        "role": data["role"]
+        "role": data["role"],
+        "avatarUrl": "https://ionicframework.com/docs/img/demos/avatar.svg"
     }
 
     create_user(new_user)
@@ -40,15 +41,19 @@ def login():
     access_token = create_access_token(identity=str(user["_id"]))
 
     return jsonify({
-        "message": "Login successful",
-        "access_token": access_token,  # <-- Enviamos el token a Ionic
-        "user": {
-            "id": str(user["_id"]),
-            "name": user["fullName"],
-            "email": user["email"], # Agregué el email por si lo ocupas en el perfil
-            "role": user["role"]
-        }
-    }), 200
+    "message": "Login successful",
+    "access_token": access_token,
+    "user": {
+        "id": str(user["_id"]),
+        "name": user["fullName"],
+        "email": user["email"],
+        "role": user["role"],
+        "avatarUrl": user.get(
+            "avatarUrl",
+            "https://ionicframework.com/docs/img/demos/avatar.svg"
+        )
+    }
+}), 200
 
 
 @auth_bp.route("/users", methods=["GET"])
@@ -62,3 +67,14 @@ def get_users():
             "role": user.get("role")
         })
     return jsonify(users), 200
+
+@auth_bp.route("/update-profile", methods=["PUT"])
+@jwt_required() 
+def update_profile():
+    
+    current_user_id = get_jwt_identity()
+    data = request.json
+
+    update_user_profile(current_user_id, data)
+
+    return jsonify({"message": "Perfil actualizado correctamente"}), 200

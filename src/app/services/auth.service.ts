@@ -36,8 +36,6 @@ export class AuthService {
     return userStr ? JSON.parse(userStr) : null;
   }
 
-  // --- LLAMADAS AL BACKEND ---
-
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((res: any) => {
@@ -66,6 +64,10 @@ export class AuthService {
     this.authState.next(false);
     
     // Lo pateamos a la pantalla de login
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth']);
+  }
+
+  updateProfile(data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/update-profile`, data);
   }
 }
