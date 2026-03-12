@@ -11,6 +11,7 @@ import {
       add
 } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -21,8 +22,10 @@ import { RouterLink } from '@angular/router';
 })
 export class HomePage implements OnInit {
   
-  userName: string = 'Paulina Muñoz'; 
+  userName: string = ''; 
   private menuCtrl = inject(MenuController);
+  // Inyectamos el servicio auth
+  private authService = inject(AuthService);
 
   constructor() {
     addIcons({ 
@@ -34,7 +37,15 @@ export class HomePage implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Usamos la siguiente funcion
+    const user = this.authService.getCurrentUser();
+    if(user) {
+      this.userName = user.name;
+    } else {
+      this.userName = 'Invitado'
+    }
+  }
 
   openMenu() {
     this.menuCtrl.open('main-menu');

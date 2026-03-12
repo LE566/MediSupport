@@ -13,10 +13,19 @@
           Inicio
         </ion-button>
 
-        <ion-button fill="clear" class="menu-btn" routerLink="/appointmentsPatient" (click)="closeMenu()">
+        @if (userRole === 'doctor'){
+          <ion-button fill="clear" class="menu-btn" routerLink="/appointmentsDoc" (click)="closeMenu()">
           <ion-icon slot="start" name="calendar-outline"></ion-icon>
           Mis Citas
-        </ion-button>
+          </ion-button>
+        }
+
+         @if (userRole === 'patient'){
+          <ion-button fill="clear" class="menu-btn" routerLink="/appointmentsPatient" (click)="closeMenu()">
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          Mis Citas
+          </ion-button>
+        }
 
         <ion-button fill="clear" class="menu-btn" routerLink="/profile" (click)="closeMenu()">
           <ion-icon slot="start" name="person-outline"></ion-icon>
@@ -24,7 +33,7 @@
         </ion-button>
 
         <ion-button fill="clear" class="menu-btn" routerLink="/cancer-classifier" (click)="closeMenu()">
-          <ion-icon slot="start" name="person-outline"></ion-icon>
+          <ion-icon slot="start" name="flask-outline"></ion-icon>
           Analisis
         </ion-button>
 

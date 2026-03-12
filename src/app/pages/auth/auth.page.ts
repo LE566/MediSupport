@@ -74,6 +74,7 @@ export class AuthPage {
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: () => {
         this.isLoading.set(false);
+
         this.router.navigate(['/home']);
       },
       error: (err) => {

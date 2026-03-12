@@ -5,7 +5,8 @@ import {
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { homeOutline, calendarOutline, personOutline } from 'ionicons/icons';
+import { homeOutline, calendarOutline, personOutline, flaskOutline} from 'ionicons/icons';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -19,14 +20,23 @@ export class AppComponent {
   
   // Usamos la sintaxis moderna que le gustó a tu profesor 😉
   private menuCtrl = inject(MenuController);
+  // Inyectamos el servicio
+  private authService = inject(AuthService);
 
   constructor() {
     // Registramos los íconos que usa tu menú
     addIcons({
       homeOutline,
       calendarOutline,
-      personOutline
+      personOutline,
+      flaskOutline
     });
+  }
+
+  // Getter actualizado para el servicio
+  get userRole(): string {
+    const user = this.authService.getCurrentUser();
+    return user ? user.role : '';
   }
 
   // 👇 ¡Aquí está la función que nos faltaba! 👇
