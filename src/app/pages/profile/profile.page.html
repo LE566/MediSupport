@@ -22,7 +22,7 @@
     
     <div class="profile-header ion-text-center">
       <div class="avatar-wrapper" (click)="changeProfilePicture()" [class.editable]="isEditing">
-        <img [src]="user?.avatarUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" alt="Avatar" />
+        <img [src]="previewUrl || user?.avatarUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" alt="Avatar" />
         @if (isEditing) {
         <div class="edit-avatar-badge">
           <ion-icon name="camera"></ion-icon>

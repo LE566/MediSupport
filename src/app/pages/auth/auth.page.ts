@@ -1,6 +1,6 @@
 import { Component, signal, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // Solo necesitamos este para el [(ngModel)]
+import { FormsModule } from '@angular/forms';
 import { 
   IonContent, IonInput, IonButton, IonIcon,
   IonModal, ToastController 
@@ -8,7 +8,9 @@ import {
 import { addIcons } from 'ionicons';
 import { 
   mailOutline, lockClosedOutline, personOutline, medkitOutline, 
-  idCardOutline, peopleOutline, chevronDownOutline, checkmarkCircle, pulse } from 'ionicons/icons';
+  idCardOutline, peopleOutline, chevronDownOutline, checkmarkCircle,
+  medkit, pulse 
+} from 'ionicons/icons';
 
 // Tu servicio de autenticación
 import { AuthService } from '../../services/auth.service';
@@ -22,7 +24,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     IonContent, IonInput, IonButton, IonIcon, 
     IonModal, FormsModule 
-  ] 
+  ],
 })
 export class AuthPage {
   // Inyección de dependencias moderna (Angular 14+)
@@ -43,7 +45,11 @@ export class AuthPage {
   medicalLicense = '';
 
   constructor() {
-    addIcons({mailOutline,lockClosedOutline,peopleOutline,chevronDownOutline,personOutline,idCardOutline,pulse,checkmarkCircle,medkitOutline});
+    addIcons({ 
+    medkitOutline, mailOutline, lockClosedOutline, personOutline, 
+    idCardOutline, peopleOutline, chevronDownOutline, checkmarkCircle,
+    medkit, pulse
+  });
   }
 
   toggleAuthMode() {
