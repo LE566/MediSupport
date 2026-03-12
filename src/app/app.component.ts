@@ -22,6 +22,7 @@ export class AppComponent {
   private menuCtrl = inject(MenuController);
   // Inyectamos el servicio
   private authService = inject(AuthService);
+  userRole: string = '';
 
   constructor() {
     // Registramos los íconos que usa tu menú
@@ -33,10 +34,12 @@ export class AppComponent {
     });
   }
 
-  // Getter actualizado para el servicio
-  get userRole(): string {
+ 
+
+  // Funcion para el rol
+  actualizarRol(){
     const user = this.authService.getCurrentUser();
-    return user ? user.role : '';
+    this.userRole = user ? user.role : ''
   }
 
   // 👇 ¡Aquí está la función que nos faltaba! 👇

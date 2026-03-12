@@ -71,7 +71,6 @@ def get_users():
 @auth_bp.route("/update-profile", methods=["PUT"])
 @jwt_required() 
 def update_profile():
-    
     current_user_id = get_jwt_identity()
     data = request.json
 

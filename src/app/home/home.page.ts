@@ -38,12 +38,15 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
-    // Usamos la siguiente funcion
+  }
+
+  // Metodo dentro de una clase
+  ionViewWillEnter(){
     const user = this.authService.getCurrentUser();
-    if(user) {
+    if (user){
       this.userName = user.name;
     } else {
-      this.userName = 'Invitado'
+      this.userName = 'Invitado';
     }
   }
 
