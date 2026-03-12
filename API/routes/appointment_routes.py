@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify
-from bson.objectid import ObjectId
-
-# 👇 ¡AQUÍ ESTÁ LA MAGIA! Importamos 'db' desde tu archivo config.py
-from config import db 
+# 👇 Importamos las funciones desde tu nuevo modelo
+from models.appointment_model import get_appointments_by_doctor, update_status
 
 appointment_bp = Blueprint("appointments", __name__)
 
@@ -13,13 +11,8 @@ appointment_bp = Blueprint("appointments", __name__)
 def get_appointments():
     doctor_id = request.args.get('doctorId')
     
-    query = {}
-    if doctor_id:
-        # Convertimos el ID de texto a ObjectId para que Mongo lo reconozca
-        query['doctorId'] = ObjectId(doctor_id) 
-
-    # Ahora 'db' sí existe y sabe que debe buscar en "medisupport"
-    citas_cursor = db.appointments.find(query) 
+    # Llamamos al modelo en lugar de a la base de datos directamente
+    citas_cursor = get_appointments_by_doctor(doctor_id)
     
     citas_lista = []
     for cita in citas_cursor:
@@ -33,7 +26,7 @@ def get_appointments():
 # ==========================================
 # 2. ACTUALIZAR ESTADO DE LA CITA
 # ==========================================
-@appointment_bp.route("/<appointment_id>/status", methods=["PATCH"])
+@appointment_bp.route("/<appointment_id>/status", methods=["PATCH"], strict_slashes=False)
 def update_appointment_status(appointment_id):
     data = request.json
     new_status = data.get("status")
@@ -41,10 +34,8 @@ def update_appointment_status(appointment_id):
     if not new_status:
         return jsonify({"error": "El status es requerido"}), 400
 
-    result = db.appointments.update_one(
-        {"_id": ObjectId(appointment_id)},
-        {"$set": {"status": new_status}}
-    )
+    # Llamamos al modelo para actualizar
+    result = update_status(appointment_id, new_status)
 
     if result.matched_count == 0:
         return jsonify({"error": "Cita no encontrada"}), 404
