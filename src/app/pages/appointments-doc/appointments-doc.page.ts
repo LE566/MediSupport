@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { 
   IonContent,
   IonIcon, IonButton, IonDatetime, MenuController,
-  ToastController, LoadingController // Agregamos los controladores para alertas
+  ToastController, LoadingController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -15,7 +15,6 @@ import {
 } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 
-// 👇 Importamos los servicios
 import { AuthService } from '../../services/auth.service';
 import { AppointmentService } from '../../services/appointment.service';
 
@@ -38,9 +37,11 @@ export class AppointmentsDocPage {
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
 
-  // Arreglos vacíos al inicio, se llenarán con los datos reales
   highlightedDates: any[] = [];
   appointmentRequests: any[] = [];
+  
+  // 👇 1. NUEVA VARIABLE: Aquí guardaremos las citas que ya aceptó el doctor
+  acceptedAppointments: any[] = []; 
 
   constructor() {
     addIcons({
@@ -51,7 +52,6 @@ export class AppointmentsDocPage {
     });
   }
 
-  // ⚠️ Quitamos ngOnInit y usamos ionViewWillEnter para evitar la caché
   ionViewWillEnter() {
     this.cargarCitas();
   }
@@ -60,28 +60,17 @@ export class AppointmentsDocPage {
     this.menuCtrl.open('main-menu');
   }
 
-  // ==========================================
-  // 1. CARGAR CITAS Y PINTAR EL CALENDARIO
-  // ==========================================
   cargarCitas() {
     const user = this.authService.getCurrentUser();
-    console.log('🕵️‍♂️ 1. Usuario actual en el frontend:', user);
-
-    // Revisa si tu backend guarda el id como 'id' o '_id'
     const doctorId = user?.id || user?._id; 
-    console.log('🕵️‍♂️ 2. ID que le vamos a pedir a Flask:', doctorId);
 
     if (doctorId) {
       this.appointmentService.getAppointmentsByDoctor(doctorId).subscribe({
         next: (response) => {
-          console.log('🕵️‍♂️ 3. ¡Flask respondió! Esto nos mandó:', response);
-
-          // OJO AQUÍ: Dependiendo de tu Flask, la respuesta puede venir directa 
-          // (response) o dentro de un objeto (response.appointments)
           const todasLasCitas = response.appointments || response; 
 
+          // --- MONTÓN 1: LAS PENDIENTES ---
           const pendientes = todasLasCitas.filter((cita: any) => cita.status === 'scheduled');
-          console.log('🕵️‍♂️ 4. Citas pendientes filtradas:', pendientes);
           
           this.appointmentRequests = pendientes.map((cita: any) => ({
             id: cita._id || cita.id, 
@@ -92,12 +81,26 @@ export class AppointmentsDocPage {
             reason: cita.specialty
           }));
 
+          // --- MONTÓN 2: LAS ACEPTADAS ---
           const aceptadas = todasLasCitas.filter((cita: any) => cita.status === 'accepted');
+          
+          // A) Las usamos para el calendario (esto ya lo tenías)
           this.highlightedDates = aceptadas.map((cita: any) => ({
             date: cita.date,
             textColor: '#ffffff',
             backgroundColor: '#2aada0',
           }));
+
+          // 👇 B) NUEVO: Las guardamos en nuestra nueva lista para pintarlas abajo
+          this.acceptedAppointments = aceptadas.map((cita: any) => ({
+            id: cita._id || cita.id, 
+            name: 'Paciente ' + (cita.patientId ? cita.patientId.substring(0, 4) : 'X'), 
+            initial: 'P', 
+            date: cita.date,
+            time: cita.time,
+            reason: cita.specialty
+          }));
+
         },
         error: (err) => {
           console.error('❌ Error desde Flask:', err);
@@ -105,14 +108,11 @@ export class AppointmentsDocPage {
         }
       });
     } else {
-      console.warn('⚠️ No se encontró el ID del doctor. ¿Iniciaste sesión?');
+      console.warn('⚠️ No se encontró el ID del doctor.');
     }
   }
 
-  // ==========================================
-  // 2. ACEPTAR CITA
-  // ==========================================
-  async acceptRequest(id: string) { // <-- Cambiado a string
+  async acceptRequest(id: string) { 
     const loading = await this.loadingCtrl.create({ spinner: 'crescent' });
     await loading.present();
 
@@ -120,7 +120,7 @@ export class AppointmentsDocPage {
       next: () => {
         loading.dismiss();
         this.mostrarToast('Cita aceptada y agendada', 'success');
-        this.cargarCitas(); // Recargamos para que se pinte en el calendario
+        this.cargarCitas(); 
       },
       error: () => {
         loading.dismiss();
@@ -129,10 +129,7 @@ export class AppointmentsDocPage {
     });
   }
 
-  // ==========================================
-  // 3. RECHAZAR CITA
-  // ==========================================
-  async rejectRequest(id: string) { // <-- Cambiado a string
+  async rejectRequest(id: string) { 
     const loading = await this.loadingCtrl.create({ spinner: 'bubbles' });
     await loading.present();
 
@@ -140,7 +137,7 @@ export class AppointmentsDocPage {
       next: () => {
         loading.dismiss();
         this.mostrarToast('Cita rechazada', 'warning');
-        this.cargarCitas(); // Recargamos para quitarla de la lista
+        this.cargarCitas(); 
       },
       error: () => {
         loading.dismiss();

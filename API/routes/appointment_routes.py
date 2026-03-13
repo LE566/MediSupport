@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 # 👇 Importamos las funciones desde tu nuevo modelo
-from models.appointment_model import get_appointments_by_doctor, update_status
+from models.appointment_model import get_appointments_by_doctor, update_status, get_appointments_by_patient
 
 appointment_bp = Blueprint("appointments", __name__)
 
@@ -41,3 +41,22 @@ def update_appointment_status(appointment_id):
         return jsonify({"error": "Cita no encontrada"}), 404
 
     return jsonify({"message": f"Estado actualizado a {new_status}"}), 200
+
+# ==========================================
+# 3. OBTENER CITAS DE UN PACIENTE
+# ==========================================
+@appointment_bp.route("/patient", methods=["GET"], strict_slashes=False)
+def get_patient_appointments():
+    patient_id = request.args.get('patientId')
+    
+    # Llamamos a nuestro nuevo modelo
+    citas_cursor = get_appointments_by_patient(patient_id)
+    
+    citas_lista = []
+    for cita in citas_cursor:
+        cita['_id'] = str(cita['_id'])
+        cita['doctorId'] = str(cita.get('doctorId'))
+        cita['patientId'] = str(cita.get('patientId'))
+        citas_lista.append(cita)
+
+    return jsonify({"appointments": citas_lista}), 200

@@ -22,8 +22,8 @@
     <div class="card-inner animate-in">
       
       <header class="page-header">
-        <h1 class="title-primary">My doctor</h1>
-        <h2 class="title-secondary">Appointments</h2>
+        <h1 class="title-primary">Manage</h1>
+        <h2 class="title-secondary">My Appointments</h2>
       </header>
 
       <section class="mission-section">
@@ -31,62 +31,101 @@
         <div class="calendar-wrapper">
           <ion-datetime 
             presentation="date" 
-            [highlightedDates]="highlightedDates"
-            locale="en-US">
+            [highlightedDates]="highlightedDates">
           </ion-datetime>
         </div>
       </section>
 
       <section class="mission-section">
-        <h3>Current Appointments</h3>
+        <h3>Pending Confirmation</h3>
+        
         <div class="requests-list">
-          @for (appt of myAppointments; track appt.id) {
-            <div class="appointment-card">
+          @for (req of pendingAppointments; track req.id) {
+            <div class="appointment-card" style="border-left: 4px solid #ffc409;">
               
-              <div class="patient-avatar">
-                <span>{{ appt.initial }}</span>
+              <div class="patient-avatar" style="background-color: #ffc409; color: white;">
+                <span>{{ req.initial }}</span>
               </div>
               
               <div class="appt-details">
-                <h4>{{ appt.doctorName }}</h4>
-                <p class="datetime">{{ appt.date }} | {{ appt.time }}</p>
-                <p class="reason">{{ appt.specialty }}</p>
-                
-                <div class="status-badge" [ngClass]="appt.status">
-                  <ion-icon [name]="getStatusIcon(appt.status)"></ion-icon>
-                  <span>{{ appt.status | titlecase }}</span>
-                </div>
+                <h4>{{ req.doctorName }}</h4>
+                <p class="datetime">{{ req.date }} | {{ req.time }}</p>
+                <p class="reason">{{ req.specialty }}</p>
               </div>
 
-              @if (appt.status !== 'denied') {
-                <div class="appt-actions">
-                  <ion-button class="action-btn cancel" (click)="cancelAppointment(appt.id)">
-                    <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-                  </ion-button>
-                </div>
-              }
+              <div class="appt-actions" style="display: flex; align-items: center; justify-content: center; padding-right: 15px;">
+                <ion-icon [name]="getStatusIcon(req.status)" [style.color]="getStatusColor(req.status)" style="font-size: 2.2rem;"></ion-icon>
+              </div>
+              
+            </div>
+          } @empty {
+            <div class="empty-state" style="text-align: center; padding: 2rem; color: var(--ion-color-medium);">
+              <ion-icon name="time-outline" style="font-size: 3rem; color: #ffc409;"></ion-icon>
+              <p>No tienes citas en espera de confirmación.</p>
             </div>
           }
         </div>
       </section>
 
-      <section class="mission-section">
-        <h3>History</h3>
+      <section class="mission-section" style="margin-top: 2rem;">
+        <h3>My Schedule (Responses)</h3>
+        
         <div class="requests-list">
-          @for (appt of pastAppointments; track appt.id) {
-            <div class="appointment-card past">
-              <div class="patient-avatar">
+          @for (appt of mySchedule; track appt.id) {
+            <div class="appointment-card" [style.border-left]="'4px solid ' + getStatusColor(appt.status)">
+              
+              <div class="patient-avatar" [style.background-color]="getStatusColor(appt.status)" style="color: white;">
                 <span>{{ appt.initial }}</span>
               </div>
+              
               <div class="appt-details">
                 <h4>{{ appt.doctorName }}</h4>
                 <p class="datetime">{{ appt.date }} | {{ appt.time }}</p>
                 <p class="reason">{{ appt.specialty }}</p>
-                <div class="status-badge completed">
-                  <ion-icon name="checkmark-circle-outline"></ion-icon>
-                  <span>Completed</span>
-                </div>
+                <p style="font-size: 0.8rem; font-weight: bold; margin-top: 4px;" [style.color]="getStatusColor(appt.status)">
+                  {{ appt.status === 'accepted' ? '¡Cita Confirmada!' : 'Cita Rechazada/Cancelada' }}
+                </p>
               </div>
+
+              <div class="appt-actions" style="display: flex; align-items: center; justify-content: center; padding-right: 15px;">
+                <ion-icon [name]="getStatusIcon(appt.status)" [style.color]="getStatusColor(appt.status)" style="font-size: 2.2rem;"></ion-icon>
+              </div>
+              
+            </div>
+          } @empty {
+            <div class="empty-state" style="text-align: center; padding: 2rem; color: var(--ion-color-medium);">
+              <ion-icon name="calendar-outline" style="font-size: 3rem; color: #a1a1a1;"></ion-icon>
+              <p>Aún no hay respuestas de tus doctores.</p>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="mission-section" style="margin-top: 2rem;">
+        <h3>Medical History</h3>
+        
+        <div class="requests-list">
+          @for (past of pastAppointments; track past.id) {
+            <div class="appointment-card" style="border-left: 4px solid #3880ff; opacity: 0.8;">
+              
+              <div class="patient-avatar" style="background-color: #3880ff; color: white;">
+                <span>{{ past.initial }}</span>
+              </div>
+              
+              <div class="appt-details">
+                <h4>{{ past.doctorName }}</h4>
+                <p class="datetime">{{ past.date }} | {{ past.time }}</p>
+                <p class="reason">{{ past.specialty }}</p>
+              </div>
+
+              <div class="appt-actions" style="display: flex; align-items: center; justify-content: center; padding-right: 15px;">
+                <ion-icon [name]="getStatusIcon(past.status)" [style.color]="getStatusColor(past.status)" style="font-size: 2.2rem;"></ion-icon>
+              </div>
+              
+            </div>
+          } @empty {
+            <div class="empty-state" style="text-align: center; padding: 1rem; color: var(--ion-color-medium);">
+              <p style="font-size: 0.9rem;">No tienes historial de citas pasadas.</p>
             </div>
           }
         </div>

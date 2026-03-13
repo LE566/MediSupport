@@ -36,7 +36,7 @@ export class AppointmentService {
 
   // Para la pantalla del Paciente
   getAppointmentsByPatient(patientId: string): Observable<{ appointments: Appointment[] }> {
-    return this.http.get<{ appointments: Appointment[] }>(`${this.apiUrl}?patientId=${patientId}`);
+    return this.http.get<{ appointments: Appointment[] }>(`${this.apiUrl}/patient?patientId=${patientId}`);
   }
 
   // ==========================================

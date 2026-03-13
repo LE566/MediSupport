@@ -72,6 +72,37 @@
         </div>
       </section>
 
+      <section class="mission-section" style="margin-top: 2rem;">
+        <h3>My Schedule (Accepted)</h3>
+        
+        <div class="requests-list">
+          @for (appt of acceptedAppointments; track appt.id) {
+            <div class="appointment-card" style="border-left: 4px solid #2aada0;">
+              
+              <div class="patient-avatar" style="background-color: #2aada0; color: white;">
+                <span>{{ appt.initial }}</span>
+              </div>
+              
+              <div class="appt-details">
+                <h4>{{ appt.name }}</h4>
+                <p class="datetime">{{ appt.date }} | {{ appt.time }}</p>
+                <p class="reason">{{ appt.reason }}</p>
+              </div>
+
+              <div class="appt-actions" style="display: flex; align-items: center; justify-content: center; padding-right: 15px;">
+                <ion-icon name="checkmark-circle" style="color: #2aada0; font-size: 2rem;"></ion-icon>
+              </div>
+              
+            </div>
+          } @empty {
+            <div class="empty-state" style="text-align: center; padding: 2rem; color: var(--ion-color-medium);">
+              <ion-icon name="calendar-outline" style="font-size: 3rem; color: #a1a1a1;"></ion-icon>
+              <p>Aún no tienes citas programadas.</p>
+            </div>
+          }
+        </div>
+      </section>
+
     </div>
 
     <footer class="footer-copyright">

@@ -18,3 +18,10 @@ def update_status(appointment_id, new_status):
         {"_id": ObjectId(appointment_id)},
         {"$set": {"status": new_status}}
     )
+
+def get_appointments_by_patient(patient_id):
+    query = {}
+    if patient_id:
+        query['patientId'] = ObjectId(patient_id)  # ✅ ¡Corregido!
+    
+    return appointments_collection.find(query)
