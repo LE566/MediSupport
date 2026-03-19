@@ -214,7 +214,8 @@ export class CancerClassifierPage implements OnInit {
 
       const cloudinaryUrl = await this.cancerClassifierService.uploadImageToCloudinary(this.selectedImage);
       const response: any = await this.cancerClassifierService.analyzeImage(
-        cloudinaryUrl, this.patientData, this.selectedImage
+        cloudinaryUrl, 
+        this.patientData
       ).toPromise();
       
       if (response && response.success) {
