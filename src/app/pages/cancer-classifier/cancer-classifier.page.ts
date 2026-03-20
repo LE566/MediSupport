@@ -244,7 +244,15 @@ export class CancerClassifierPage implements OnInit {
       }
     } catch (error: any) {
       console.error('Analysis error:', error);
-      this.showToast(`Error: ${error.message}`, 'danger');
+      let errorMessage = 'Ocurrió un error inesperado al analizar la imagen.';
+      
+      if (error.error && error.error.error) {
+        errorMessage = error.error.error; 
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      this.showToast(errorMessage, 'danger');
     } finally {
       this.analyzing = false;
       await loading.dismiss();
