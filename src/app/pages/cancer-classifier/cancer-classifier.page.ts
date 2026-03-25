@@ -98,8 +98,8 @@ export class CancerClassifierPage implements OnInit {
 
   async checkServerAvailability() {
     try {
-      const isAvailable = await this.cancerClassifierService.checkServerHealth().toPromise();
-      this.serverAvailable = isAvailable || false;
+      const response: any = await this.cancerClassifierService.checkServerHealth().toPromise();
+      this.serverAvailable = response && response.status === 'healthy';
     } catch (error) {
       this.serverAvailable = false;
     }
@@ -209,7 +209,7 @@ export class CancerClassifierPage implements OnInit {
 
     try {
       if (!this.serverAvailable) {
-        throw new Error('Server unavailable. Showing demo data if necessary.');
+        throw new Error('AI Models are currently unavailable on the server. Evaluation is disabled.');
       }
 
       const cloudinaryUrl = await this.cancerClassifierService.uploadImageToCloudinary(this.selectedImage);

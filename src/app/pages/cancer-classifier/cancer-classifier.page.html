@@ -13,7 +13,7 @@
     @if (!serverAvailable) {
       <div class="server-alert">
         <ion-icon name="warning-outline" class="alert-icon"></ion-icon>
-        <p>Analysis server is unavailable. Showing demo results.</p>
+        <p>AI models are missing on the server. Image evaluation is disabled.</p>
       </div>
     }
 
@@ -101,7 +101,7 @@
         }
 
         <div class="button-group ion-margin-top">
-          <ion-button (click)="analyzeImage()" [disabled]="!selectedImage || analyzing" expand="block" class="primary-btn teal-btn">
+          <ion-button (click)="analyzeImage()" [disabled]="!selectedImage || analyzing || !serverAvailable" expand="block" class="primary-btn teal-btn">
             @if (!analyzing) { <ion-icon name="analytics-outline" slot="start"></ion-icon> }
             @if (analyzing) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
             {{ analyzing ? 'Analyzing...' : 'Analyze with AI' }}
@@ -130,8 +130,6 @@
           <h2 class="result-text">{{ getResultText() }}</h2>
           <p class="result-description">{{ getResultDescription() }}</p>
         </div>
-
-
 
         <div class="recommendations">
           <div class="section-title">
