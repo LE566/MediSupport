@@ -141,6 +141,13 @@
 
         <div class="button-group ion-margin-top">
           <ion-button (click)="newAnalysis()" expand="block" class="primary-btn">New Analysis</ion-button>
+          
+          @if (isPatient) {
+            <ion-button (click)="goToAppointments()" expand="block" fill="outline" class="outline-btn" style="margin-top: 15px;">
+              <ion-icon name="calendar-outline" slot="start"></ion-icon>
+              Manage Appointments
+            </ion-button>
+          }
         </div>
       </div>
     }

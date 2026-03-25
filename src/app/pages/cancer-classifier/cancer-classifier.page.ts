@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { 
   IonContent, IonHeader, IonTitle, IonToolbar, IonButton,
   IonIcon, IonButtons, IonSpinner, IonItem,
@@ -16,8 +17,8 @@ import {
   helpCircleOutline, checkmarkCircleOutline, alertCircleOutline
 } from 'ionicons/icons';
 
-// Ruta corregida
 import { CancerClassifierService, AnalysisResponse } from '../../services/cancer-classifier.service';
+import { AuthService } from '../../services/auth.service';
 
 interface AnalysisResult {
   classification: 'Benign' | 'Malignant' | 'Benigno' | 'Maligno' | null;
@@ -63,6 +64,7 @@ export class CancerClassifierPage implements OnInit {
   result: AnalysisResult | null = null;
   history: HistoryItem[] = [];
   serverAvailable = true;
+  isPatient = false; // Variable para saber si es paciente
 
   patientData: PatientData = {
     name: '', age: null, id: '', breastSide: '', clinicalNotes: ''
@@ -80,7 +82,9 @@ export class CancerClassifierPage implements OnInit {
   constructor(
     private cancerClassifierService: CancerClassifierService,
     private toastController: ToastController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private router: Router,
+    private authService: AuthService
   ) {
     addIcons({ 
       cloudUploadOutline, imageOutline, barChartOutline, timeOutline,
@@ -94,6 +98,12 @@ export class CancerClassifierPage implements OnInit {
   async ngOnInit() {
     await this.checkServerAvailability();
     await this.loadHistoryFromDatabase();
+
+    // Verificamos si el usuario actual es un paciente
+    const user = this.authService.getCurrentUser();
+    if (user && (user.role === 'patient' || user.role === 'paciente')) {
+      this.isPatient = true;
+    }
   }
 
   async checkServerAvailability() {
@@ -315,6 +325,10 @@ export class CancerClassifierPage implements OnInit {
         <div class="important-note">Note: This is a preliminary AI result. Final interpretation must be performed by a certified radiologist.</div>
       `;
     }
+  }
+
+  goToAppointments() {
+    this.router.navigate(['/appointmentsPatient']);
   }
 
   private async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
