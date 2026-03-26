@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 from routes.auth_routes import auth_bp
 from routes.appointment_routes import appointment_bp
 from routes.ai_routes import ai_bp
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1' 
 
 load_dotenv()
 
