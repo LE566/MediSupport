@@ -325,3 +325,36 @@
     }
   }
 }
+
+.appt-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .action-btn {
+      --padding-start: 0;
+      --padding-end: 0;
+      --border-radius: 10px;
+      --box-shadow: none;
+      width: 36px;
+      height: 36px;
+      margin: 0;
+
+      &.accept {
+        --background: rgba(var(--teal-rgb), 0.15);
+        --color: var(--teal);
+      }
+      
+      /* 👇 Aquí está el reschedule, DENTRO de .action-btn 👇 */
+      &.reschedule {
+        --background: rgba(255, 196, 9, 0.15); 
+        --color: #ffc409;
+      }
+
+      &.reject {
+        --background: #fee2e2;
+        --color: #ef4444;
+      }
+    }
+  }
+

@@ -17,8 +17,8 @@ export interface Appointment {
   providedIn: 'root'
 })
 export class AppointmentService {
-  // Ajusta el puerto si tu Flask corre en otro lado
-  private apiUrl = 'https://medisupport-production.up.railway.app/api/appointments'; 
+// private apiUrl = 'https://medisupport-production.up.railway.app/api/appointments';
+private apiUrl = 'http://localhost:5000/api/appointments'; // 👈 Usa esta para probar
   
   private http = inject(HttpClient);
 
@@ -44,6 +44,16 @@ export class AppointmentService {
   
   updateAppointmentStatus(appointmentId: string, newStatus: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${appointmentId}/status`, { status: newStatus });
+  }
+
+  // REAGENDAR CITA
+  rescheduleAppointment(id: string, newDate: string, newTime: string) {
+    // 👇 Le quitamos el '/appointments' y lo dejamos solo con '/reschedule'
+    return this.http.patch(`${this.apiUrl}/reschedule/${id}`, {
+      date: newDate,
+      time: newTime,
+      status: 'accepted' // Lo pasamos a aceptado automáticamente
+    });
   }
 
   createAppointment(appointmentData: any): Observable<any> {

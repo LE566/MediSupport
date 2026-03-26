@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
   IonContent, IonIcon, IonButton, IonDatetime, MenuController,
-  ToastController, LoadingController
+  ToastController, LoadingController, AlertController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -32,6 +32,7 @@ export class AppointmentsDocPage {
   private appointmentService = inject(AppointmentService);
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
+  private alertCtrl = inject(AlertController);
 
   highlightedDates: any[] = [];
   appointmentRequests: any[] = [];
@@ -176,5 +177,49 @@ export class AppointmentsDocPage {
       position: 'bottom'
     });
     await toast.present();
+  }
+
+  async openRescheduleAlert(req: any) {
+    const alert = await this.alertCtrl.create({
+      header: 'Reagendar Cita',
+      message: `Elige una nueva fecha y hora para ${req.name}`,
+      inputs: [
+        { name: 'newDate', type: 'date', value: req.date },
+        { name: 'newTime', type: 'time', value: req.time }
+      ],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Reagendar',
+          handler: (data: any) => { 
+            if (data.newDate && data.newTime) {
+              this.rescheduleRequest(req.id, data.newDate, data.newTime);
+              return true; // 👈 ¡Agrega esto para que TypeScript sea feliz!
+            } else {
+              this.showToast('Debes seleccionar fecha y hora', 'warning');
+              return false; // Evita que se cierre la alerta
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async rescheduleRequest(id: string, newDate: string, newTime: string) {
+    const loading = await this.loadingCtrl.create({ spinner: 'crescent' });
+    await loading.present();
+
+    this.appointmentService.rescheduleAppointment(id, newDate, newTime).subscribe({
+      next: () => {
+        loading.dismiss();
+        this.showToast('Cita reagendada exitosamente', 'success');
+        this.loadDoctorAppointments(); // Recargamos para verla en "Aceptadas"
+      },
+      error: () => {
+        loading.dismiss();
+        this.showToast('Error al reagendar cita', 'danger');
+      }
+    });
   }
 }

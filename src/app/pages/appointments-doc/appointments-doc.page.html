@@ -57,6 +57,11 @@
                 <ion-button class="action-btn accept" (click)="acceptRequest(req.id)">
                   <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
                 </ion-button>
+                
+                <ion-button class="action-btn reschedule" (click)="openRescheduleAlert(req)">
+                  <ion-icon slot="icon-only" name="calendar-outline"></ion-icon>
+                </ion-button>
+
                 <ion-button class="action-btn reject" (click)="rejectRequest(req.id)">
                   <ion-icon slot="icon-only" name="close-outline"></ion-icon>
                 </ion-button>

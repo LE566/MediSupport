@@ -36,3 +36,10 @@ def get_appointments_by_doctor_and_date(doctor_id, date_str):
         'status': {'$in': ['scheduled', 'accepted']} # Solo contamos las ocupadas o en espera
     }
     return appointments_collection.find(query)
+
+def update_appointment(appointment_id, update_fields):
+    # Actualiza cualquier campo que le mandemos en el diccionario update_fields
+    return appointments_collection.update_one(
+        {"_id": ObjectId(appointment_id)},
+        {"$set": update_fields}
+    )
