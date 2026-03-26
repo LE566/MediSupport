@@ -386,7 +386,7 @@ export class CancerClassifierPage implements OnInit {
   }
 
   goToAppointments() {
-    this.router.navigate(['/appointments-patient']);
+    this.router.navigate(['/appointmentsPatient']);
   }
 
   private async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
