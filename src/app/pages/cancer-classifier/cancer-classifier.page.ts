@@ -15,7 +15,7 @@ import {
   personOutline, calendarOutline, idCardOutline, bodyOutline,
   arrowBackOutline, arrowForwardOutline, image, person, barChart,
   helpCircleOutline, checkmarkCircleOutline, alertCircleOutline,
-  cameraOutline, addOutline // 👈 Nuevos iconos
+  cameraOutline,addOutline, informationCircleOutline // 👈 Nuevos iconos
 } from 'ionicons/icons';
 
 // 👇 Importamos el plugin de la cámara de Capacitor
@@ -100,7 +100,7 @@ export class CancerClassifierPage implements OnInit {
       personOutline, calendarOutline, idCardOutline, bodyOutline,
       arrowBackOutline, arrowForwardOutline, image, person, barChart,
       helpCircleOutline, checkmarkCircleOutline, alertCircleOutline,
-      cameraOutline, addOutline // 👈 Registramos los nuevos iconos
+      cameraOutline, addOutline, informationCircleOutline // 👈 Registramos los nuevos iconos
     });
   }
 

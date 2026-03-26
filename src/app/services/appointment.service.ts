@@ -17,8 +17,8 @@ export interface Appointment {
   providedIn: 'root'
 })
 export class AppointmentService {
-// private apiUrl = 'https://medisupport-production.up.railway.app/api/appointments';
-private apiUrl = 'http://localhost:5000/api/appointments'; // 👈 Usa esta para probar
+  // Ajusta el puerto si tu Flask corre en otro lado
+  private apiUrl = 'https://medisupport-production.up.railway.app/api/appointments'; 
   
   private http = inject(HttpClient);
 

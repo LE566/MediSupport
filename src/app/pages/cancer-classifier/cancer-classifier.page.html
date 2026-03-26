@@ -88,7 +88,21 @@
           <span>Upload Mammogram</span>
         </div>
         <p class="subtitle-text">{{ patientData.name }} | {{ patientData.breastSide }}</p>
-        
+
+        <div class="framing-guide-container">
+          <p class="guide-text">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            Please center the mammogram inside the frame when taking the photo.
+          </p>
+          <div class="camera-frame-guide">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+            <ion-icon name="image-outline" class="placeholder-icon"></ion-icon>
+          </div>
+        </div>
+
         <div style="display: flex; gap: 10px; margin-bottom: 15px;">
           <ion-button (click)="takePhoto()" fill="outline" expand="block" style="flex: 1;" color="primary">
             <ion-icon name="camera-outline" slot="start"></ion-icon>
