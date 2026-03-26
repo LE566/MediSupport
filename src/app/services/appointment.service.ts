@@ -18,7 +18,7 @@ export interface Appointment {
 })
 export class AppointmentService {
   // Ajusta el puerto si tu Flask corre en otro lado
-  private apiUrl = 'http://medisupport-production.up.railway.app/api/appointments'; 
+  private apiUrl = 'https://medisupport-production.up.railway.app/api/appointments'; 
   
   private http = inject(HttpClient);
 

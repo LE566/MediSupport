@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   // Cambia esto a tu URL de Python
-  private apiUrl = 'http://medisupport-production.up.railway.app/api/auth'; 
+  private apiUrl = 'https://medisupport-production.up.railway.app/api/auth'; 
 
   // Mantiene el estado de la sesión en tiempo real
   private authState = new BehaviorSubject<boolean>(this.hasToken());

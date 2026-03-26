@@ -16,7 +16,7 @@ export class CancerClassifierService {
   private http = inject(HttpClient);
   
   // Tu URL base de Python
-  private apiUrl = 'http://medisupport-production.up.railway.app/api'; 
+  private apiUrl = 'https://medisupport-production.up.railway.app/api'; 
 
   // Tus credenciales de Cloudinary
   private cloudName = 'dzxpiut42'; 
