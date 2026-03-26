@@ -6,4 +6,4 @@ python-dotenv
 pymongo
 Pillow
 requests
-tensorflow-cpu==2.15.0
+tensorflow-cpu
