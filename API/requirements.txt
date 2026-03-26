@@ -8,3 +8,4 @@ Pillow
 requests
 tensorflow-cpu
 bcrypt
+cryptography
