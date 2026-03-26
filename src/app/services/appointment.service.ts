@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// 👇 1. Creamos el "molde" de la cita según lo que nos manda tu Flask
 export interface Appointment {
   _id: string;
   patientId: string;
@@ -45,5 +44,13 @@ export class AppointmentService {
   
   updateAppointmentStatus(appointmentId: string, newStatus: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${appointmentId}/status`, { status: newStatus });
+  }
+
+  createAppointment(appointmentData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, appointmentData);
+  }
+
+  getAvailableTimes(doctorId: string, date: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/available-times?doctorId=${doctorId}&date=${date}`);
   }
 }

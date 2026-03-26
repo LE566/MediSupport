@@ -37,9 +37,8 @@
     height: 46px;
     margin: 0;
 
-    /* 👇 Agrega esto para controlar el tamaño exacto del ícono */
     ion-icon {
-      font-size: 24px; /* Ajusta este valor (20px, 22px o 24px) hasta que quede idéntico a tu Home */
+      font-size: 24px; 
     }
   }
 
@@ -98,33 +97,30 @@
 .mission-section {
   margin-bottom: 35px;
   
-  /* 👇 REDUCIDO: Tamaño del título de sección (h3) 👇 */
   h3 {
-    font-size: 1.3rem; /* Cambiado de 1.6rem a 1.3rem para internal sub-headings */
+    font-size: 1.3rem; 
     font-weight: 700;
-    color: var(--blue-dark); /* Usando var(--blue-dark) para consistencia */
+    color: var(--blue-dark); 
     margin-bottom: 15px;
   }
 }
 
 /* =========================================
-   REDISEÑO DEL CALENDARIO Y CITAS (Major change)
+   REDISEÑO DEL CALENDARIO Y CITAS
    ========================================= */
 
 .calendar-wrapper {
-  /* 👇 NUEVO: Fondo distinctivo y separación del Main Sheet 👇 */
-  background: rgba(var(--teal-rgb), 0.05); /* Un fondo teal muy suave */
+  background: rgba(var(--teal-rgb), 0.05); 
   border-radius: 20px;
   padding: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Sombra suave para dar volumen */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
   border: 1px solid rgba(var(--teal-rgb), 0.1);
   margin-bottom: 25px;
 
   ion-datetime {
     width: 100%;
-    /* 👇 NUEVO: Estilo interno del calendario para dar contraste 👇 */
-    --background: #ffffff; /* El fondo de la grilla sigue blanco para claridad */
-    border-radius: 12px; /* Borde interior del grid limpio */
+    --background: #ffffff; 
+    border-radius: 12px; 
     overflow: hidden;
 
     &::part(month-year-button) {
@@ -132,35 +128,29 @@
         font-weight: 800;
         font-size: 1.1rem;
     }
-    /* Estilo para los números y cabeceras dentro del grid */
     &::part(calendar-day) {
         color: var(--blue-dark);
         font-weight: 600;
     }
-
     &::part(header) {
         color: var(--blue-dark);
         font-weight: 700;
     }
 
-    /* Estilo de la rueda de selección de fecha (cuando cambia el mes) */
     --wheel-highlight-background: rgba(var(--teal-rgb), 0.1);
     --wheel-highlight-border: 1px solid var(--teal);
   }
 }
 
-/* Estilo para que el número del día seleccionado resalte en blanco sobre el fondo de color */
 ::part(calendar-day highlighted current) {
     color: white !important;
 }
 
-/* Tarjetas de Citas - Consistent Styling with the calendar container */
 .appointment-card {
   display: flex;
   align-items: center;
   
-  /* 👇 NUEVO: Fondo consistente con el calendario container 👇 */
-  background: rgba(var(--teal-rgb), 0.03); /* Un fondo teal aún más suave */
+  background: rgba(var(--teal-rgb), 0.03); 
   border: 1px solid rgba(var(--teal-rgb), 0.08);
   border-radius: 16px;
   padding: 15px;
@@ -228,7 +218,7 @@
   }
 }
 
-/* Footer y Animaciones (De tu código) */
+/* Footer y Animaciones */
 .footer-copyright {
   text-align: center;
   padding: 20px;
@@ -257,25 +247,22 @@
 }
 
 .page-header {
-  margin-bottom: 25px; /* Menos margen que el home para aprovechar espacio */
+  margin-bottom: 25px; 
   
   .title-primary {
-    font-size: 2rem; /* Reducido de 3rem */
+    font-size: 2rem; 
     font-weight: 800;
     color: var(--blue-dark);
     margin: 0 0 10px;
   }
   
   .title-secondary {
-    font-size: 1.8rem; /* Reducido de 2.6rem */
+    font-size: 1.8rem; 
     font-weight: 300;
     color: var(--blue);
     margin: 0 0 35px;
   }
 }
-/* ... todo tu código SCSS que ya tenías arriba (Variables, hero-top, card-panel, calendar-wrapper, appointment-card base) ... */
-
-/* 👇 AGREGA ESTO AL FINAL DE TU ARCHIVO SCSS PARA LOS ESTADOS DEL PACIENTE 👇 */
 
 .appt-details {
   .status-badge {
@@ -292,14 +279,13 @@
       font-size: 14px;
     }
 
-    /* Colores dinámicos basados en la clase del estado */
     &.accepted { 
       background: rgba(var(--teal-rgb), 0.15); 
       color: var(--teal); 
     }
     &.pending { 
-      background: #fef08a; /* Amarillo suave */
-      color: #854d0e; /* Texto café/dorado oscuro */
+      background: #fef08a; 
+      color: #854d0e; 
     }
     &.denied { 
       background: #fee2e2; 
@@ -319,12 +305,72 @@
   }
 }
 
-/* Tarjeta más opaca para el historial de citas pasadas */
 .appointment-card.past {
   opacity: 0.7;
   background: #f8fafc;
   .patient-avatar {
     background: #e2e8f0;
     color: #64748b;
+  }
+}
+
+/* =========================================
+   ESTILOS DEL FORMULARIO DE NUEVA CITA
+   ========================================= */
+.new-appointment-form {
+  background: rgba(var(--teal-rgb), 0.05);
+  border: 1px solid rgba(var(--teal-rgb), 0.1);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+
+  .custom-item {
+    --background: #ffffff;
+    --border-color: transparent;
+    --padding-start: 15px;
+    --inner-padding-end: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+
+    ion-icon {
+      color: var(--teal);
+      margin-right: 12px;
+      font-size: 1.4rem;
+    }
+
+    ion-select, ion-textarea {
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+      color: var(--blue-dark);
+      font-weight: 500;
+    }
+  }
+
+  .loading-text {
+    margin-left: 10px;
+    color: var(--blue);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .error-text {
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin: -5px 0 15px 15px;
+    font-weight: 600;
+  }
+
+  .submit-btn {
+    --background: var(--blue);
+    --border-radius: 14px;
+    margin-top: 20px;
+    height: 52px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    --box-shadow: 0 4px 12px rgba(20, 93, 160, 0.3);
+    text-transform: none; /* Quita el texto en mayúsculas forzado de Ionic */
   }
 }

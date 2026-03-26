@@ -17,3 +17,7 @@ def update_user_profile(user_id, update_data):
         {"_id": ObjectId(user_id)}, 
         {"$set": update_data}
     )
+
+def get_doctors():
+    # Busca usuarios donde el rol sea 'doctor' (o 'Doctor' dependiendo de cómo lo guardes)
+    return users_collection.find({"role": "doctor"})

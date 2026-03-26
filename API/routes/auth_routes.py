@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from utils.password_utils import hash_password, check_password
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from models.user_model import create_user, find_user_by_email, getUsers, update_user_profile
+from models.user_model import create_user, find_user_by_email, getUsers, update_user_profile, get_doctors
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -77,3 +77,20 @@ def update_profile():
     update_user_profile(current_user_id, data)
 
     return jsonify({"message": "Perfil actualizado correctamente"}), 200
+
+@auth_bp.route("/doctors", methods=["GET"])
+def fetch_doctors():
+    try:
+        doctores_cursor = get_doctors()
+        
+        lista_doctores = []
+        for doc in doctores_cursor:
+            lista_doctores.append({
+                "id": str(doc["_id"]),
+                # Usamos fullName porque así lo guardas en tu /register
+                "name": doc.get("fullName", "Doctor") 
+            })
+            
+        return jsonify({"doctors": lista_doctores}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

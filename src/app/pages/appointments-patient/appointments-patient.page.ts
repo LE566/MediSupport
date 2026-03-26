@@ -2,23 +2,18 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
-  IonContent,
-  IonIcon, IonButton, IonDatetime, MenuController, ToastController, LoadingController
+  IonContent, IonIcon, IonButton, IonDatetime, 
+  MenuController, ToastController, LoadingController,
+  IonItem, IonSelect, IonSelectOption, IonTextarea, IonSpinner
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
-  menuOutline, 
-  personOutline, 
-  closeOutline,
-  timeOutline,             
-  checkmarkCircleOutline,  
-  closeCircleOutline,
-  calendarOutline,
-  checkmarkCircle
+  menuOutline, personOutline, closeOutline, timeOutline,            
+  checkmarkCircleOutline, closeCircleOutline, calendarOutline, checkmarkCircle,
+  medkitOutline
 } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 
-// 👇 Servicios Reales
 import { AuthService } from '../../services/auth.service';
 import { AppointmentService } from '../../services/appointment.service';
 
@@ -28,9 +23,8 @@ import { AppointmentService } from '../../services/appointment.service';
   styleUrls: ['./appointments-patient.page.scss'],
   standalone: true,
   imports: [
-    IonContent,
-    CommonModule, FormsModule,
-    IonIcon, IonButton, IonDatetime, RouterLink,
+    IonContent, CommonModule, FormsModule, IonIcon, IonButton, IonDatetime, RouterLink,
+    IonItem, IonSelect, IonSelectOption, IonTextarea, IonSpinner
   ]
 })
 export class AppointmentsPatientPage {
@@ -41,79 +35,173 @@ export class AppointmentsPatientPage {
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
 
-  // Arreglos para nuestras listas
+  // Arrays for lists
   highlightedDates: any[] = [];
-  pendingAppointments: any[] = []; // Citas que están esperando respuesta (scheduled)
-  mySchedule: any[] = [];          // Citas aceptadas y rechazadas (accepted / cancelled)
-  pastAppointments: any[] = [];    // Citas que ya sucedieron (completed) - Para el futuro
+  pendingAppointments: any[] = []; 
+  mySchedule: any[] = [];          
+  pastAppointments: any[] = [];    
+
+  // Variables for the new appointment form
+  minDate = new Date().toISOString(); 
+  availableTimes: string[] = []; 
+  doctors: any[] = []; 
+  isLoadingTimes = false;
+  
+  newAppointment = {
+    doctorId: '',
+    date: '',
+    time: '',
+    reason: ''
+  };
 
   constructor() {
     addIcons({
       menuOutline, personOutline, closeOutline, timeOutline,
-      checkmarkCircleOutline, closeCircleOutline, calendarOutline, checkmarkCircle
+      checkmarkCircleOutline, closeCircleOutline, calendarOutline, checkmarkCircle,
+      medkitOutline 
     });
   }
 
   ionViewWillEnter() {
-    this.cargarCitasPaciente();
+    // 🔥 First load doctors, THEN load appointments to match the names
+    this.loadDoctorsAndAppointments();
   }
 
   openMenu() {
     this.menuCtrl.open('main-menu');
   }
 
-  cargarCitasPaciente() {
+  loadDoctorsAndAppointments() {
+    this.authService.getDoctors().subscribe({
+      next: (response) => {
+        this.doctors = response.doctors;
+        this.loadPatientAppointments(); // Load appointments after we have the doctors list
+      },
+      error: (err) => {
+        console.error('Error loading doctors:', err);
+        this.showToast('Could not load doctor list', 'warning');
+      }
+    });
+  }
+
+  loadPatientAppointments() {
     const user = this.authService.getCurrentUser();
     const patientId = user?.id || user?._id; 
 
     if (patientId) {
       this.appointmentService.getAppointmentsByPatient(patientId).subscribe({
         next: (response) => {
-          const todasLasCitas = response.appointments || response; 
+          const allAppointments = response.appointments || response; 
 
-          // 1. PENDIENTES (Las que dicen 'scheduled' en tu BD)
-          const pendientes = todasLasCitas.filter((c: any) => c.status === 'scheduled');
-          this.pendingAppointments = pendientes.map(this.mapearCita);
+          const pending = allAppointments.filter((c: any) => c.status === 'scheduled');
+          this.pendingAppointments = pending.map(this.mapAppointment);
 
-          // 2. MI AGENDA (Aceptadas o Rechazadas)
-          const agendadas = todasLasCitas.filter((c: any) => c.status === 'accepted' || c.status === 'cancelled');
-          this.mySchedule = agendadas.map(this.mapearCita);
+          const scheduled = allAppointments.filter((c: any) => c.status === 'accepted' || c.status === 'cancelled');
+          this.mySchedule = scheduled.map(this.mapAppointment);
 
-          // Llenar calendario con las aceptadas
-          const aceptadas = todasLasCitas.filter((c: any) => c.status === 'accepted');
-          this.highlightedDates = aceptadas.map((c: any) => ({
+          const accepted = allAppointments.filter((c: any) => c.status === 'accepted');
+          this.highlightedDates = accepted.map((c: any) => ({
             date: c.date,
             textColor: '#ffffff',
-            backgroundColor: '#145da0', // Azul paciente
+            backgroundColor: '#145da0', 
           }));
 
-          // 3. PASADAS (completed)
-          const completadas = todasLasCitas.filter((c: any) => c.status === 'completed');
-          this.pastAppointments = completadas.map(this.mapearCita);
-
+          const completed = allAppointments.filter((c: any) => c.status === 'completed');
+          this.pastAppointments = completed.map(this.mapAppointment);
         },
         error: (err) => {
-          console.error('Error al cargar citas:', err);
-          this.mostrarToast('Error al cargar tu agenda', 'danger');
+          console.error('Error loading appointments:', err);
+          this.showToast('Error loading your schedule', 'danger');
         }
       });
     }
   }
 
-  // Función de ayuda para darle formato a los datos
-  mapearCita(cita: any) {
+  // 🔥 Matches the Doctor ID with the real Doctor Name 🔥
+  mapAppointment = (appointment: any) => {
+    const doc = this.doctors.find(d => d.id === appointment.doctorId);
+    const doctorName = doc ? doc.name : 'Unknown Doctor';
+
     return {
-      id: cita._id || cita.id,
-      doctorName: 'Doctor ID: ' + (cita.doctorId ? cita.doctorId.substring(0, 4) : 'X'), // Aquí podrías hacer otra petición para sacar el nombre real
-      initial: 'Dr',
-      date: cita.date,
-      time: cita.time,
-      specialty: cita.specialty,
-      status: cita.status // 'scheduled', 'accepted', 'cancelled', 'completed'
+      id: appointment._id || appointment.id,
+      doctorName: doctorName, 
+      initial: doctorName.charAt(0).toUpperCase(),
+      date: appointment.date,
+      time: appointment.time,
+      specialty: appointment.specialty,
+      status: appointment.status 
     };
   }
 
-  // Función para devolver el icono correcto en el HTML
+  isDateEnabled = (dateIsoString: string) => {
+    const date = new Date(dateIsoString);
+    const day = date.getUTCDay();
+    // Bloquear fines de semana (Domingo = 0, Sábado = 6)
+    if (day === 0 || day === 6) {
+      return false; 
+    }
+    
+    return true; 
+  };
+
+  onDateOrDoctorSelected() {
+    if (this.newAppointment.doctorId && this.newAppointment.date) {
+      this.isLoadingTimes = true;
+      this.availableTimes = []; 
+      this.newAppointment.time = ''; 
+      
+      const dateStr = this.newAppointment.date.split('T')[0]; 
+
+      this.appointmentService.getAvailableTimes(this.newAppointment.doctorId, dateStr).subscribe({
+        next: (response) => {
+          this.availableTimes = response.available_times;
+          this.isLoadingTimes = false;
+        },
+        error: (err) => {
+          console.error('Error loading times', err);
+          this.showToast('Error loading availability', 'warning');
+          this.isLoadingTimes = false;
+        }
+      });
+    }
+  }
+
+  async submitAppointmentRequest() {
+    if (!this.newAppointment.doctorId || !this.newAppointment.date || !this.newAppointment.time) {
+      this.showToast('Please select a doctor, date, and time', 'warning');
+      return;
+    }
+
+    const user = this.authService.getCurrentUser();
+    const payload = {
+      doctorId: this.newAppointment.doctorId,
+      patientId: user?.id || user?._id,
+      date: this.newAppointment.date.split('T')[0], 
+      time: this.newAppointment.time,
+      reason: this.newAppointment.reason || 'General Checkup'
+    };
+
+    const loading = await this.loadingCtrl.create({ spinner: 'crescent' });
+    await loading.present();
+
+    this.appointmentService.createAppointment(payload).subscribe({
+      next: () => {
+        loading.dismiss();
+        this.showToast('Appointment requested successfully', 'success');
+        
+        // Reset form and reload
+        this.newAppointment = { doctorId: '', date: '', time: '', reason: '' };
+        this.availableTimes = [];
+        this.loadPatientAppointments(); 
+      },
+      error: (err) => {
+        loading.dismiss();
+        console.error(err);
+        this.showToast('Error requesting appointment', 'danger');
+      }
+    });
+  }
+
   getStatusIcon(status: string): string {
     switch (status) {
       case 'accepted': return 'checkmark-circle-outline';
@@ -124,20 +212,19 @@ export class AppointmentsPatientPage {
     }
   }
 
-  // Función para devolver el color del icono
   getStatusColor(status: string): string {
     switch (status) {
-      case 'accepted': return '#2a2ead'; // Verde
-      case 'scheduled': return '#e8ae31'; // Amarillo
-      case 'cancelled': return '#eb445a'; // Rojo
-      case 'completed': return '#3880ff'; // Azul
+      case 'accepted': return '#2a2ead'; 
+      case 'scheduled': return '#e8ae31'; 
+      case 'cancelled': return '#eb445a'; 
+      case 'completed': return '#3880ff'; 
       default: return '#92949c';
     }
   }
 
-  async mostrarToast(mensaje: string, color: string) {
+  async showToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({
-      message: mensaje,
+      message: message,
       duration: 2000,
       color: color,
       position: 'bottom'

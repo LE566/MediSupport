@@ -89,14 +89,26 @@
         </div>
         <p class="subtitle-text">{{ patientData.name }} | {{ patientData.breastSide }}</p>
         
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <ion-button (click)="takePhoto()" fill="outline" expand="block" style="flex: 1;" color="primary">
+            <ion-icon name="camera-outline" slot="start"></ion-icon>
+            Take Photo
+          </ion-button>
+
+          <ion-button (click)="selectImage()" fill="outline" expand="block" style="flex: 1;" color="primary">
+            <ion-icon name="image-outline" slot="start"></ion-icon>
+            Gallery
+          </ion-button>
+        </div>
+
         <div class="upload-area" (click)="selectImage()" (dragover)="onDragOver($event)" (drop)="onDrop($event)" (dragleave)="onDragLeave($event)" [class.active]="isDragOver">
-          <ion-icon name="image-outline" class="upload-icon"></ion-icon>
-          <p class="upload-text">Drag a PNG image here or click to select</p>
+          <ion-icon name="cloud-upload-outline" class="upload-icon"></ion-icon>
+          <p class="upload-text">Or drag an image here</p>
         </div>
 
         @if (imagePreview) {
-          <div class="image-preview">
-            <img [src]="imagePreview" alt="Preview" class="preview-img">
+          <div class="image-preview" style="margin-top: 15px;">
+            <img [src]="imagePreview" alt="Preview" class="preview-img" style="border-radius: 12px;">
           </div>
         }
 
@@ -160,7 +172,7 @@
 
       @if (history.length > 0) {
         <div class="history-list">
-          @for (item of history; track item.date) {
+          @for (item of displayedHistory; track item.date) {
             <div class="history-item">
               <img [src]="item.image" alt="Mammogram" class="history-img">
               <div class="history-details">
@@ -177,10 +189,18 @@
             </div>
           }
         </div>
+
+        @if (history.length > displayLimit) {
+          <ion-button fill="clear" expand="block" (click)="showMoreHistory()" style="margin-top: 10px; color: var(--blue);">
+            <ion-icon name="add-outline" slot="start"></ion-icon>
+            Show More
+          </ion-button>
+        }
+
       } @else {
         <div class="empty-state">
           <ion-icon name="document-text-outline"></ion-icon>
-          <p>No previous analyses</p>
+          <p>No previous analyses found.</p>
         </div>
       }
     </div>

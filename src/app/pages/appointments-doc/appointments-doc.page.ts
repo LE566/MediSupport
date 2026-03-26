@@ -2,16 +2,13 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
-  IonContent,
-  IonIcon, IonButton, IonDatetime, MenuController,
+  IonContent, IonIcon, IonButton, IonDatetime, MenuController,
   ToastController, LoadingController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
-  menuOutline, 
-  personOutline, 
-  checkmarkOutline, 
-  closeOutline 
+  menuOutline, personOutline, checkmarkOutline, closeOutline,
+  calendarOutline, timeOutline, checkmarkCircleOutline, checkmarkDoneOutline
 } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 
@@ -24,8 +21,7 @@ import { AppointmentService } from '../../services/appointment.service';
   styleUrls: ['./appointments-doc.page.scss'],
   standalone: true,
   imports: [
-    IonContent,
-    CommonModule, FormsModule,
+    IonContent, CommonModule, FormsModule,
     IonIcon, IonButton, IonDatetime, RouterLink,
   ]
 })
@@ -39,77 +35,85 @@ export class AppointmentsDocPage {
 
   highlightedDates: any[] = [];
   appointmentRequests: any[] = [];
-  
-  // 👇 1. NUEVA VARIABLE: Aquí guardaremos las citas que ya aceptó el doctor
   acceptedAppointments: any[] = []; 
+  patients: any[] = []; // 👈 Lista para guardar nombres reales
 
   constructor() {
     addIcons({
-      menuOutline,
-      personOutline,
-      checkmarkOutline,
-      closeOutline
+      menuOutline, personOutline, checkmarkOutline, closeOutline,
+      calendarOutline, timeOutline, checkmarkCircleOutline, checkmarkDoneOutline
     });
   }
 
   ionViewWillEnter() {
-    this.cargarCitas();
+    this.loadPatientsAndAppointments();
   }
 
   openMenu() {
     this.menuCtrl.open('main-menu');
   }
 
-  cargarCitas() {
+  // 1. Cargamos pacientes primero para tener sus nombres
+  loadPatientsAndAppointments() {
+    this.authService.getAllUsers().subscribe({
+      next: (users) => {
+        this.patients = users;
+        this.loadDoctorAppointments();
+      },
+      error: () => {
+        this.showToast('Could not load patient directory', 'warning');
+        this.loadDoctorAppointments(); // Intentamos cargar citas de todos modos
+      }
+    });
+  }
+
+  loadDoctorAppointments() {
     const user = this.authService.getCurrentUser();
     const doctorId = user?.id || user?._id; 
 
     if (doctorId) {
       this.appointmentService.getAppointmentsByDoctor(doctorId).subscribe({
         next: (response) => {
-          const todasLasCitas = response.appointments || response; 
+          const allAppointments = response.appointments || response; 
 
-          // --- MONTÓN 1: LAS PENDIENTES ---
-          const pendientes = todasLasCitas.filter((cita: any) => cita.status === 'scheduled');
-          
-          this.appointmentRequests = pendientes.map((cita: any) => ({
-            id: cita._id || cita.id, 
-            name: 'Paciente ' + (cita.patientId ? cita.patientId.substring(0, 4) : 'X'), 
-            initial: 'P', 
-            date: cita.date,
-            time: cita.time,
-            reason: cita.specialty
-          }));
+          // --- PENDING ---
+          const pending = allAppointments.filter((cita: any) => cita.status === 'scheduled');
+          this.appointmentRequests = pending.map(this.mapAppointment);
 
-          // --- MONTÓN 2: LAS ACEPTADAS ---
-          const aceptadas = todasLasCitas.filter((cita: any) => cita.status === 'accepted');
-          
-          // A) Las usamos para el calendario (esto ya lo tenías)
-          this.highlightedDates = aceptadas.map((cita: any) => ({
+          // --- ACCEPTED ---
+          const accepted = allAppointments.filter((cita: any) => cita.status === 'accepted');
+          this.acceptedAppointments = accepted.map(this.mapAppointment);
+
+          // Calendario (solo mostramos las aceptadas en el calendario)
+          this.highlightedDates = accepted.map((cita: any) => ({
             date: cita.date,
             textColor: '#ffffff',
             backgroundColor: '#2aada0',
           }));
 
-          // 👇 B) NUEVO: Las guardamos en nuestra nueva lista para pintarlas abajo
-          this.acceptedAppointments = aceptadas.map((cita: any) => ({
-            id: cita._id || cita.id, 
-            name: 'Paciente ' + (cita.patientId ? cita.patientId.substring(0, 4) : 'X'), 
-            initial: 'P', 
-            date: cita.date,
-            time: cita.time,
-            reason: cita.specialty
-          }));
-
         },
         error: (err) => {
-          console.error('❌ Error desde Flask:', err);
-          this.mostrarToast('Error al cargar la agenda', 'danger');
+          console.error('Error fetching from Flask:', err);
+          this.showToast('Error loading schedule', 'danger');
         }
       });
-    } else {
-      console.warn('⚠️ No se encontró el ID del doctor.');
     }
+  }
+
+  // 2. Función para mapear nombres y formato
+  mapAppointment = (cita: any) => {
+    const patient = this.patients.find(p => p.id === cita.patientId);
+    const patientName = patient ? patient.fullName : 'Unknown Patient';
+
+    return {
+      id: cita._id || cita.id, 
+      name: patientName, 
+      initial: patientName.charAt(0).toUpperCase(), 
+      date: cita.date,
+      time: cita.time,
+      reason: cita.specialty,
+      status: cita.status
+    };
   }
 
   async acceptRequest(id: string) { 
@@ -119,12 +123,12 @@ export class AppointmentsDocPage {
     this.appointmentService.updateAppointmentStatus(id, 'accepted').subscribe({
       next: () => {
         loading.dismiss();
-        this.mostrarToast('Cita aceptada y agendada', 'success');
-        this.cargarCitas(); 
+        this.showToast('Appointment accepted', 'success');
+        this.loadDoctorAppointments(); 
       },
       error: () => {
         loading.dismiss();
-        this.mostrarToast('Error al aceptar la cita', 'danger');
+        this.showToast('Error accepting appointment', 'danger');
       }
     });
   }
@@ -136,19 +140,37 @@ export class AppointmentsDocPage {
     this.appointmentService.updateAppointmentStatus(id, 'cancelled').subscribe({
       next: () => {
         loading.dismiss();
-        this.mostrarToast('Cita rechazada', 'warning');
-        this.cargarCitas(); 
+        this.showToast('Appointment rejected', 'warning');
+        this.loadDoctorAppointments(); 
       },
       error: () => {
         loading.dismiss();
-        this.mostrarToast('Error al rechazar la cita', 'danger');
+        this.showToast('Error rejecting appointment', 'danger');
       }
     });
   }
 
-  async mostrarToast(mensaje: string, color: string) {
+  // 3. NUEVO: Función para marcar la cita como completada
+  async completeRequest(id: string) { 
+    const loading = await this.loadingCtrl.create({ spinner: 'crescent' });
+    await loading.present();
+
+    this.appointmentService.updateAppointmentStatus(id, 'completed').subscribe({
+      next: () => {
+        loading.dismiss();
+        this.showToast('Appointment marked as completed', 'success');
+        this.loadDoctorAppointments(); 
+      },
+      error: () => {
+        loading.dismiss();
+        this.showToast('Error updating appointment', 'danger');
+      }
+    });
+  }
+
+  async showToast(message: string, color: string) {
     const toast = await this.toastCtrl.create({
-      message: mensaje,
+      message: message,
       duration: 2000,
       color: color,
       position: 'bottom'

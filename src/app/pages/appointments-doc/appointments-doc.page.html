@@ -37,13 +37,13 @@
       </section>
 
       <section class="mission-section">
-        <h3>Pending Appointments</h3>
+        <h3>Pending Requests</h3>
         
         <div class="requests-list">
           @for (req of appointmentRequests; track req.id) {
-            <div class="appointment-card">
+            <div class="appointment-card" [ngClass]="'status-' + req.status">
               
-              <div class="patient-avatar">
+              <div class="patient-avatar" [ngClass]="'bg-' + req.status">
                 <span>{{ req.initial }}</span>
               </div>
               
@@ -64,9 +64,9 @@
               
             </div>
           } @empty {
-            <div class="empty-state" style="text-align: center; padding: 2rem; color: var(--ion-color-medium);">
-              <ion-icon name="checkmark-circle-outline" style="font-size: 3rem; color: #2aada0;"></ion-icon>
-              <p>¡Todo al día! No tienes solicitudes pendientes.</p>
+            <div class="empty-state">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              <p>All caught up! No pending requests.</p>
             </div>
           }
         </div>
@@ -77,9 +77,9 @@
         
         <div class="requests-list">
           @for (appt of acceptedAppointments; track appt.id) {
-            <div class="appointment-card" style="border-left: 4px solid #2aada0;">
+            <div class="appointment-card" [ngClass]="'status-' + appt.status">
               
-              <div class="patient-avatar" style="background-color: #2aada0; color: white;">
+              <div class="patient-avatar" [ngClass]="'bg-' + appt.status">
                 <span>{{ appt.initial }}</span>
               </div>
               
@@ -89,15 +89,17 @@
                 <p class="reason">{{ appt.reason }}</p>
               </div>
 
-              <div class="appt-actions" style="display: flex; align-items: center; justify-content: center; padding-right: 15px;">
-                <ion-icon name="checkmark-circle" style="color: #2aada0; font-size: 2rem;"></ion-icon>
+              <div class="appt-actions-single">
+                <ion-button fill="clear" color="primary" (click)="completeRequest(appt.id)" class="complete-btn">
+                  <ion-icon slot="icon-only" name="checkmark-done-outline"></ion-icon>
+                </ion-button>
               </div>
               
             </div>
           } @empty {
-            <div class="empty-state" style="text-align: center; padding: 2rem; color: var(--ion-color-medium);">
-              <ion-icon name="calendar-outline" style="font-size: 3rem; color: #a1a1a1;"></ion-icon>
-              <p>Aún no tienes citas programadas.</p>
+            <div class="empty-state">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <p>You have no scheduled appointments.</p>
             </div>
           }
         </div>

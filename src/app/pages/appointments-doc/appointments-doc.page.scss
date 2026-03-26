@@ -273,3 +273,55 @@
     margin: 0 0 35px;
   }
 }
+
+/* =========================================
+   ESTILOS DINÁMICOS DE CITAS (Doctor)
+   ========================================= */
+
+.appointment-card {
+  &.status-scheduled { border-left: 4px solid #ffc409; }
+  &.status-accepted { border-left: 4px solid var(--teal); }
+}
+
+.patient-avatar {
+  &.bg-scheduled { background-color: #ffc409; color: white; }
+  &.bg-accepted { background-color: var(--teal); color: white; }
+}
+
+.empty-state {
+  text-align: center; 
+  padding: 2rem; 
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    &[name="checkmark-circle-outline"] { color: var(--teal); }
+    &[name="calendar-outline"] { color: #a1a1a1; }
+  }
+  
+  p {
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+.appt-actions-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 5px;
+
+  .complete-btn {
+    --background: rgba(var(--teal-rgb), 0.1);
+    --color: var(--teal);
+    --border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    margin: 0;
+    
+    ion-icon {
+      font-size: 1.5rem;
+    }
+  }
+}

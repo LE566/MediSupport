@@ -22,6 +22,17 @@ def update_status(appointment_id, new_status):
 def get_appointments_by_patient(patient_id):
     query = {}
     if patient_id:
-        query['patientId'] = ObjectId(patient_id)  # ✅ ¡Corregido!
+        query['patientId'] = ObjectId(patient_id)
     
+    return appointments_collection.find(query)
+
+def create_appointment(appointment_data):
+    return appointments_collection.insert_one(appointment_data)
+
+def get_appointments_by_doctor_and_date(doctor_id, date_str):
+    query = {
+        'doctorId': ObjectId(doctor_id),
+        'date': date_str,
+        'status': {'$in': ['scheduled', 'accepted']} # Solo contamos las ocupadas o en espera
+    }
     return appointments_collection.find(query)

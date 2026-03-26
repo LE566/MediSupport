@@ -70,4 +70,14 @@ export class AuthService {
   updateProfile(data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/update-profile`, data);
   }
+
+
+  getDoctors(): Observable<any> {
+    // Ajusta la URL si tu prefijo no es /auth
+    return this.http.get(`${this.apiUrl}/doctors`); 
+  }
+
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/users`); 
+  }
 }

@@ -14,10 +14,14 @@ import {
   warningOutline, analyticsOutline, medicalOutline, documentTextOutline,
   personOutline, calendarOutline, idCardOutline, bodyOutline,
   arrowBackOutline, arrowForwardOutline, image, person, barChart,
-  helpCircleOutline, checkmarkCircleOutline, alertCircleOutline
+  helpCircleOutline, checkmarkCircleOutline, alertCircleOutline,
+  cameraOutline, addOutline // 👈 Nuevos iconos
 } from 'ionicons/icons';
 
-import { CancerClassifierService, AnalysisResponse } from '../../services/cancer-classifier.service';
+// 👇 Importamos el plugin de la cámara de Capacitor
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+
+import { CancerClassifierService } from '../../services/cancer-classifier.service';
 import { AuthService } from '../../services/auth.service';
 
 interface AnalysisResult {
@@ -30,6 +34,7 @@ interface HistoryItem {
   patientName: string;
   patientAge: number;
   patientId: string;
+  doctorId: string; // 👈 Agregamos para el filtro
   breastSide: string;
   clinicalNotes: string;
   date: Date;
@@ -62,9 +67,12 @@ export class CancerClassifierPage implements OnInit {
   isDragOver = false;
   analyzing = false;
   result: AnalysisResult | null = null;
-  history: HistoryItem[] = [];
   serverAvailable = true;
-  isPatient = false; // Variable para saber si es paciente
+  isPatient = false; 
+
+  // 👇 Variables para el historial y paginación
+  history: HistoryItem[] = [];
+  displayLimit = 3; // Cuántos mostramos inicialmente
 
   patientData: PatientData = {
     name: '', age: null, id: '', breastSide: '', clinicalNotes: ''
@@ -91,45 +99,53 @@ export class CancerClassifierPage implements OnInit {
       warningOutline, analyticsOutline, medicalOutline, documentTextOutline,
       personOutline, calendarOutline, idCardOutline, bodyOutline,
       arrowBackOutline, arrowForwardOutline, image, person, barChart,
-      helpCircleOutline, checkmarkCircleOutline, alertCircleOutline
+      helpCircleOutline, checkmarkCircleOutline, alertCircleOutline,
+      cameraOutline, addOutline // 👈 Registramos los nuevos iconos
     });
   }
 
   async ngOnInit() {
     await this.checkServerAvailability();
-    await this.loadHistoryFromDatabase();
 
-    // Verificamos si el usuario actual es un paciente
     const user = this.authService.getCurrentUser();
     if (user && (user.role === 'patient' || user.role === 'paciente')) {
       this.isPatient = true;
     }
+
+    await this.loadHistoryFromDatabase(user);
   }
 
-  async checkServerAvailability() {
-    try {
-      const response: any = await this.cancerClassifierService.checkServerHealth().toPromise();
-      this.serverAvailable = response && response.status === 'healthy';
-    } catch (error) {
-      this.serverAvailable = false;
-    }
-  }
-
-  async loadHistoryFromDatabase() {
+  // 👇 LÓGICA 1: FILTRO DE PRIVACIDAD
+  async loadHistoryFromDatabase(user: any) {
     try {
       const predictions = await this.cancerClassifierService.getPredictions().toPromise();
       if (predictions && predictions.length > 0) {
-        this.history = predictions.map((prediction: any) => ({
+        
+        // Mapeamos todo primero
+        let allHistory = predictions.map((prediction: any) => ({
           image: prediction.image_url,
           patientName: prediction.patient_name,
           patientAge: prediction.patient_age,
           patientId: prediction.patient_id,
+          doctorId: prediction.doctor_id,
           breastSide: prediction.breast_side,
           clinicalNotes: prediction.clinical_notes,
           date: new Date(prediction.analysis_date),
           classification: prediction.classification,
           confidence: prediction.confidence
         }));
+
+        // 🔥 Filtramos según el usuario (Si no hay usuario, por seguridad no mostramos nada)
+        if (!user) {
+          this.history = [];
+        } else {
+          // Como el backend guarda el ID de quien subió la foto (sea paciente o doctor) 
+          // en el campo doctorId, filtramos directamente con eso para ambos casos.
+          this.history = allHistory.filter((item: HistoryItem) => 
+            item.doctorId === user.id || item.doctorId === user._id
+          );
+        }
+
       } else {
         this.history = [];
       }
@@ -137,6 +153,15 @@ export class CancerClassifierPage implements OnInit {
       console.error('Error loading history:', error);
       this.history = [];
     }
+  }
+
+  // 👇 LÓGICA 2: PAGINACIÓN
+  get displayedHistory() {
+    return this.history.slice(0, this.displayLimit);
+  }
+
+  showMoreHistory() {
+    this.displayLimit += 5; // Carga 5 más cada vez que le pican
   }
 
   isPatientDataValid(): boolean {
@@ -163,10 +188,33 @@ export class CancerClassifierPage implements OnInit {
     this.showResults = false;
   }
 
+  // 👇 LÓGICA 3: CÁMARA NATIVA MÓVIL
+  async takePhoto() {
+    try {
+      const capturedPhoto = await Camera.getPhoto({
+        resultType: CameraResultType.Uri, // Obtenemos el path temporal
+        source: CameraSource.Camera,      // Abre la cámara
+        quality: 90,                      // Calidad alta pero comprimida
+        allowEditing: true                // Permite recortar los bordes negros de la radiografía
+      });
+
+      if (capturedPhoto.webPath) {
+        // Convertimos la foto del celular en un objeto 'File' para Cloudinary
+        const response = await fetch(capturedPhoto.webPath);
+        const blob = await response.blob();
+        const file = new File([blob], `camara_${new Date().getTime()}.png`, { type: 'image/png' });
+        
+        this.handleImage(file, capturedPhoto.webPath);
+      }
+    } catch (error) {
+      console.log('Cámara cancelada o error', error);
+    }
+  }
+
   selectImage() {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.png';
+    input.accept = 'image/*'; // Dejamos que suban cualquier imagen
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) this.handleImage(file);
@@ -191,17 +239,27 @@ export class CancerClassifierPage implements OnInit {
     if (files && files.length > 0) this.handleImage(files[0]);
   }
 
-  handleImage(file: File) {
-    if (file.type !== 'image/png') {
-      this.showToast('Only PNG files are allowed', 'danger');
-      return;
-    }
+  // Ajustado para manejar tanto webPaths de cámara como FileReader
+  handleImage(file: File, webPath?: string) {
     this.selectedImage = file;
     this.result = null;
 
-    const reader = new FileReader();
-    reader.onload = () => { this.imagePreview = reader.result as string; };
-    reader.readAsDataURL(file);
+    if (webPath) {
+      this.imagePreview = webPath; // Más rápido si viene de la cámara
+    } else {
+      const reader = new FileReader();
+      reader.onload = () => { this.imagePreview = reader.result as string; };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async checkServerAvailability() {
+    try {
+      const response: any = await this.cancerClassifierService.checkServerHealth().toPromise();
+      this.serverAvailable = response && response.status === 'healthy';
+    } catch (error) {
+      this.serverAvailable = false;
+    }
   }
 
   async analyzeImage() {
@@ -234,11 +292,14 @@ export class CancerClassifierPage implements OnInit {
           confidence: response.confidence_percent
         };
 
+        const user = this.authService.getCurrentUser();
+
         const historyItem: HistoryItem = {
           image: cloudinaryUrl,
           patientName: this.patientData.name,
           patientAge: this.patientData.age!,
           patientId: this.patientData.id,
+          doctorId: user?.id || user?._id || 'unknown',
           breastSide: this.patientData.breastSide,
           clinicalNotes: this.patientData.clinicalNotes,
           date: new Date(),
@@ -253,15 +314,12 @@ export class CancerClassifierPage implements OnInit {
         throw new Error('Valid response not received from server');
       }
     } catch (error: any) {
-      console.error('Analysis error:', error);
       let errorMessage = 'Ocurrió un error inesperado al analizar la imagen.';
-      
       if (error.error && error.error.error) {
         errorMessage = error.error.error; 
       } else if (error.message) {
         errorMessage = error.message;
       }
-
       this.showToast(errorMessage, 'danger');
     } finally {
       this.analyzing = false;
@@ -328,7 +386,7 @@ export class CancerClassifierPage implements OnInit {
   }
 
   goToAppointments() {
-    this.router.navigate(['/appointmentsPatient']);
+    this.router.navigate(['/appointments-patient']);
   }
 
   private async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
