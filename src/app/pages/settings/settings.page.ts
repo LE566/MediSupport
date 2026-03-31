@@ -74,11 +74,14 @@ export class SettingsPage implements OnInit {
   private applyDarkMode() {
     document.body.classList.toggle('dark', this.darkMode);
     document.body.classList.toggle('light', !this.darkMode);
+    document.documentElement.classList.toggle('ion-palette-dark', this.darkMode);
   }
 
   private applyTextSize() {
     document.body.classList.remove('text-small', 'text-medium', 'text-large');
     document.body.classList.add('text-' + this.textSize);
+    document.documentElement.classList.remove('text-small', 'text-medium', 'text-large');
+    document.documentElement.classList.add('text-' + this.textSize);
   }
 
   async savePreference(key: string, value: boolean) {

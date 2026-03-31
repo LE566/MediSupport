@@ -288,3 +288,20 @@
   border-width: 0 3px 3px 0;
   border-bottom-right-radius: 8px;
 }
+
+/* =========================================================
+   DARK MODE OVERRIDES
+   ========================================================= */
+:host-context(html.ion-palette-dark) {
+  --success-bg: rgba(42, 173, 160, 0.15) !important;
+  --danger-bg: rgba(223, 97, 97, 0.15) !important;
+  
+  .input-group { background: #243a4e !important; border-color: #3d5a70 !important; }
+  .custom-item ion-input, .custom-item ion-select, .custom-item ion-textarea { color: #e8edf2 !important; }
+  .custom-item .icon-blue, .custom-item .icon-teal { background: rgba(42, 173, 160, 0.1) !important; }
+  
+  .result-display { background: #243a4e !important; }
+  .confidence-bar { background: #3d5a70 !important; }
+  .framing-guide-container { background: #243a4e !important; border: 1px solid #3d5a70 !important; }
+  .upload-area { border-color: #3d5a70 !important; background: #243a4e !important; }
+}

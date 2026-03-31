@@ -12,6 +12,7 @@
     font-weight: 800;
     margin: 0 0 5px;
   }
+
   p {
     font-size: 0.9rem;
     opacity: 0.8;
@@ -32,10 +33,24 @@
     font-size: 1.1rem;
     justify-content: flex-start;
     height: 50px;
-    
+
     ion-icon {
       color: #2aada0;
       margin-right: 15px;
     }
+  }
+}
+
+/* === DARK MODE === */
+:host-context(html.ion-palette-dark) {
+  .menu-content {
+    --background: #243a4e;
+  }
+  .menu-header {
+    background: linear-gradient(160deg, #162536 0%, #243a4e 100%);
+  }
+  .menu-btn {
+    --color: #e8edf2 !important;
+    ion-icon { color: #2aada0 !important; }
   }
 }

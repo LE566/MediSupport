@@ -278,3 +278,26 @@ ion-toggle {
   .h-line { position: absolute; background: var(--teal); height: 4px; width: 100%; top: 8px; }
   .v-line { position: absolute; background: var(--teal); width: 4px; height: 100%; left: 8px; }
 }
+
+/* === DARK MODE === */
+:host-context(html.ion-palette-dark) {
+  ion-content { --background: #243a4e !important; }
+  .card-panel { background: #2f4a5e !important; }
+
+  /* Oculta las formas blancas decorativas que se ven grises */
+  .hero-shapes .shape { display: none !important; }
+  
+  /* El profile-header no debe tener fondo propio */
+  .profile-header { background: transparent !important; }
+
+  .avatar-wrapper img { border-color: #3d5a70; background-color: #e2e8f0; }
+
+  /* Botón de regresar blanco */
+  ion-back-button { color: #ffffff !important; --color: #ffffff !important; }
+  .edit-btn { --color: #ffffff !important; }
+  .input-group { background: rgba(0,0,0,0.1); border-color: #3d5a70; }
+  .custom-item ion-input { color: #e8edf2; }
+  .section-title { color: #2aada0 !important; }
+  .toggle-item ion-label h2, .about-item ion-label h2 { color: #e8edf2 !important; }
+  .toggle-item ion-label p { color: #9bafc4 !important; }
+}

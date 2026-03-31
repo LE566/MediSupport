@@ -358,3 +358,20 @@ ion-content {
 }
 
 /* Modal styles are in global.scss (Ionic renders modals outside the component) */
+
+/* === DARK MODE === */
+:host-context(html.ion-palette-dark) {
+  ion-content { --background: #243a4e !important; }
+  .card-panel { background: #2f4a5e !important; }
+  .card-inner h2 { color: #e8edf2 !important; }
+  .clean-input {
+    background: #243a4e; border-color: #3d5a70;
+    ion-input { --color: #e8edf2; }
+    &:focus-within { background: #2f4a5e; border-color: #2aada0; }
+  }
+  .social-btn {
+    background: #243a4e; border-color: #3d5a70; color: #e8edf2;
+    &.apple ion-icon { color: #ffffff; }
+  }
+  .forgot, .switch, .divider span { color: #9bafc4; }
+}

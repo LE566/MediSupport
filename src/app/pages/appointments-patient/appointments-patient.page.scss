@@ -374,3 +374,27 @@
     text-transform: none; /* Quita el texto en mayúsculas forzado de Ionic */
   }
 }
+
+/* === DARK MODE === */
+:host-context(html.ion-palette-dark) {
+  .main-content { --background: #243a4e !important; }
+  .card-panel { background: #2f4a5e !important; }
+  .welcome-text, .page-header .title-primary { color: #e8edf2 !important; }
+  .mission-section h3 { color: #2aada0 !important; }
+  .calendar-wrapper ion-datetime {
+    --background: #243a4e !important;
+    &::part(month-year-button) { color: #2aada0 !important; }
+    &::part(calendar-day) { color: #e8edf2 !important; }
+    &::part(header) { color: #e8edf2 !important; }
+  }
+  .appointment-card {
+    background: #243a4e !important; border-color: #3d5a70 !important;
+    .appt-details h4 { color: #e8edf2 !important; }
+    .appt-details .datetime, .appt-details .reason { color: #9bafc4 !important; }
+  }
+  .appointment-card.past { background: #243a4e !important; opacity: 0.5; }
+  .new-appointment-form .custom-item {
+    --background: #243a4e !important; border-color: #3d5a70 !important;
+    ion-select, ion-textarea { color: #e8edf2 !important; }
+  }
+}

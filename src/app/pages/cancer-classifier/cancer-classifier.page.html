@@ -18,23 +18,23 @@
     }
 
     <div class="progress-indicator">
-      <div class="progress-step" [class.active]="showPatientForm" [class.completed]="showImageSection || showResults">
+      <div class="progress-step" [class.active]="showPatientForm()" [class.completed]="showImageSection() || showResults()">
         <div class="step-number"><ion-icon name="person"></ion-icon></div>
         <span>Data</span>
       </div>
-      <div class="progress-line" [class.active]="showImageSection || showResults"></div>
-      <div class="progress-step" [class.active]="showImageSection" [class.completed]="showResults">
+      <div class="progress-line" [class.active]="showImageSection() || showResults()"></div>
+      <div class="progress-step" [class.active]="showImageSection()" [class.completed]="showResults()">
         <div class="step-number"><ion-icon name="image"></ion-icon></div>
         <span>Upload</span>
       </div>
-      <div class="progress-line" [class.active]="showResults"></div>
-      <div class="progress-step" [class.active]="showResults">
+      <div class="progress-line" [class.active]="showResults()"></div>
+      <div class="progress-step" [class.active]="showResults()">
         <div class="step-number"><ion-icon name="bar-chart"></ion-icon></div>
         <span>Results</span>
       </div>
     </div>
 
-    @if (showPatientForm) {
+    @if (showPatientForm()) {
       <div class="card-panel animate-in">
         <div class="section-title">
           <ion-icon name="person-outline"></ion-icon>
@@ -81,7 +81,7 @@
       </div>
     }
 
-    @if (showImageSection) {
+    @if (showImageSection()) {
       <div class="card-panel animate-in">
         <div class="section-title">
           <ion-icon name="cloud-upload-outline"></ion-icon>
@@ -127,10 +127,10 @@
         }
 
         <div class="button-group ion-margin-top">
-          <ion-button (click)="analyzeImage()" [disabled]="!selectedImage || analyzing || !serverAvailable" expand="block" class="primary-btn teal-btn">
-            @if (!analyzing) { <ion-icon name="analytics-outline" slot="start"></ion-icon> }
-            @if (analyzing) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
-            {{ analyzing ? 'Analyzing...' : 'Analyze with AI' }}
+          <ion-button (click)="analyzeImage()" [disabled]="!selectedImage || analyzing() || !serverAvailable" expand="block" class="primary-btn teal-btn">
+            @if (!analyzing()) { <ion-icon name="analytics-outline" slot="start"></ion-icon> }
+            @if (analyzing()) { <ion-spinner name="crescent" slot="start"></ion-spinner> }
+            {{ analyzing() ? 'Analyzing...' : 'Analyze with AI' }}
           </ion-button>
           
           <div class="secondary-buttons">
@@ -141,7 +141,7 @@
       </div>
     }
 
-    @if (showResults) {
+    @if (showResults()) {
       <div class="card-panel animate-in">
         <div class="section-title">
           <ion-icon name="bar-chart-outline"></ion-icon>
@@ -149,8 +149,8 @@
         </div>
 
         <div class="result-display" [ngClass]="{
-          'benign': result?.classification === 'Benign' || result?.classification === 'Benigno', 
-          'malignant': result?.classification === 'Malignant' || result?.classification === 'Maligno'
+          'benign': result()?.classification === 'Benign' || result()?.classification === 'Benigno', 
+          'malignant': result()?.classification === 'Malignant' || result()?.classification === 'Maligno'
         }">
           <ion-icon [name]="getResultIcon()" class="result-icon"></ion-icon>
           <h2 class="result-text">{{ getResultText() }}</h2>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -65,8 +65,8 @@ export class CancerClassifierPage implements OnInit {
   selectedImage: File | null = null;
   imagePreview: string | null = null;
   isDragOver = false;
-  analyzing = false;
-  result: AnalysisResult | null = null;
+  analyzing = signal(false);
+  result = signal<AnalysisResult | null>(null);
   serverAvailable = true;
   isPatient = false; 
 
@@ -78,9 +78,9 @@ export class CancerClassifierPage implements OnInit {
     name: '', age: null, id: '', breastSide: '', clinicalNotes: ''
   };
 
-  showPatientForm = true;
-  showImageSection = false;
-  showResults = false;
+  showPatientForm = signal(true);
+  showImageSection = signal(false);
+  showResults = signal(false);
 
   breastSides = [
     { value: 'Right Breast', label: 'Right Breast' },
@@ -174,23 +174,33 @@ export class CancerClassifierPage implements OnInit {
 
   continueToImageUpload() {
     if (this.isPatientDataValid()) {
-      this.showPatientForm = false;
-      this.showImageSection = true;
-      this.showResults = false;
+      this.showPatientForm.set(false);
+      this.showImageSection.set(true);
+      this.showResults.set(false);
     } else {
       this.showToast('Please fill in all required fields', 'warning');
     }
   }
 
   backToPatientForm() {
-    this.showPatientForm = true;
-    this.showImageSection = false;
-    this.showResults = false;
+    this.showPatientForm.set(true);
+    this.showImageSection.set(false);
+    this.showResults.set(false);
   }
 
   // 👇 LÓGICA 3: CÁMARA NATIVA MÓVIL
   async takePhoto() {
     try {
+      let permissions = await Camera.checkPermissions();
+      if (permissions.camera !== 'granted') {
+        permissions = await Camera.requestPermissions();
+      }
+      
+      if (permissions.camera !== 'granted') {
+        this.showToast('Permiso de cámara denegado.', 'warning');
+        return;
+      }
+
       const capturedPhoto = await Camera.getPhoto({
         resultType: CameraResultType.Uri, // Obtenemos el path temporal
         source: CameraSource.Camera,      // Abre la cámara
@@ -242,7 +252,7 @@ export class CancerClassifierPage implements OnInit {
   // Ajustado para manejar tanto webPaths de cámara como FileReader
   handleImage(file: File, webPath?: string) {
     this.selectedImage = file;
-    this.result = null;
+    this.result.set(null);
 
     if (webPath) {
       this.imagePreview = webPath; // Más rápido si viene de la cámara
@@ -265,8 +275,8 @@ export class CancerClassifierPage implements OnInit {
   async analyzeImage() {
     if (!this.selectedImage) return;
 
-    this.analyzing = true;
-    this.result = null;
+    this.analyzing.set(true);
+    this.result.set(null);
 
     const loading = await this.loadingController.create({
       message: 'Analyzing mammogram with AI...',
@@ -287,10 +297,10 @@ export class CancerClassifierPage implements OnInit {
       ).toPromise();
       
       if (response && response.success) {
-        this.result = {
+        this.result.set({
           classification: response.classification,
           confidence: response.confidence_percent
-        };
+        });
 
         const user = this.authService.getCurrentUser();
 
@@ -308,8 +318,8 @@ export class CancerClassifierPage implements OnInit {
         };
 
         this.history.unshift(historyItem);
-        this.showResults = true;
-        this.showImageSection = false;
+        this.showResults.set(true);
+        this.showImageSection.set(false);
       } else {
         throw new Error('Valid response not received from server');
       }
@@ -322,7 +332,7 @@ export class CancerClassifierPage implements OnInit {
       }
       this.showToast(errorMessage, 'danger');
     } finally {
-      this.analyzing = false;
+      this.analyzing.set(false);
       await loading.dismiss();
     }
   }
@@ -330,10 +340,10 @@ export class CancerClassifierPage implements OnInit {
   newAnalysis() {
     this.selectedImage = null;
     this.imagePreview = null;
-    this.result = null;
-    this.showPatientForm = true;
-    this.showImageSection = false;
-    this.showResults = false;
+    this.result.set(null);
+    this.showPatientForm.set(true);
+    this.showImageSection.set(false);
+    this.showResults.set(false);
   }
 
   clearAll() {
@@ -342,28 +352,28 @@ export class CancerClassifierPage implements OnInit {
   }
 
   getResultIcon(): string {
-    if (!this.result) return 'help-circle-outline';
-    return (this.result.classification === 'Benign' || this.result.classification === 'Benigno') 
+    if (!this.result()) return 'help-circle-outline';
+    return (this.result()?.classification === 'Benign' || this.result()?.classification === 'Benigno') 
       ? 'checkmark-circle-outline' 
       : 'alert-circle-outline';
   }
 
   getResultText(): string {
-    if (!this.result) return 'Waiting...';
-    return `Diagnosis: ${this.result.classification}`;
+    if (!this.result()) return 'Waiting...';
+    return `Diagnosis: ${this.result()?.classification}`;
   }
 
   getResultDescription(): string {
-    if (!this.result) return '';
-    return (this.result.classification === 'Benign' || this.result.classification === 'Benigno') 
+    if (!this.result()) return '';
+    return (this.result()?.classification === 'Benign' || this.result()?.classification === 'Benigno') 
       ? 'No suspicious findings for malignancy were detected.' 
       : 'Suspicious findings requiring further evaluation were detected.';
   }
 
   getRecommendations(): string {
-    if (!this.result) return '';
+    if (!this.result()) return '';
 
-    if (this.result.classification === 'Benign' || this.result.classification === 'Benigno') {
+    if (this.result()?.classification === 'Benign' || this.result()?.classification === 'Benigno') {
       return `
         <p><strong>Benign findings:</strong></p>
         <ul>

@@ -109,3 +109,26 @@
 ion-toggle {
   --background-checked: var(--teal);
 }
+
+/* =========================================================
+   DARK MODE OVERRIDES PARA SETTINGS
+   ========================================================= */
+:host-context(html.ion-palette-dark) {
+  .main-header {
+    --background: rgba(30, 45, 61, 0.95);
+    ion-title { color: #e8edf2; }
+  }
+  .settings-content { --background: #243a4e; }
+  .section-title {
+    span, ion-icon { color: #2aada0; }
+  }
+  .settings-group {
+    background: #2f4a5e;
+    border-color: #3d5a70;
+  }
+  .settings-item {
+    h2 { color: #e8edf2; }
+    p { color: #9bafc4; }
+    & + .settings-item { border-top-color: #3d5a70; }
+  }
+}

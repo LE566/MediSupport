@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { 
   IonApp, IonRouterOutlet, IonMenu, IonContent, 
   IonButton, IonIcon, MenuController 
@@ -13,16 +13,30 @@ import { AuthService } from './services/auth.service';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  // Asegúrate de que todos los componentes de Ionic que usamos en el HTML estén aquí importados
   imports: [IonApp, IonRouterOutlet, IonMenu, IonContent, IonButton, IonIcon, RouterLink],
 })
 export class AppComponent {
   
-  // Usamos la sintaxis moderna que le gustó a tu profesor 😉
   private menuCtrl = inject(MenuController);
-  // Inyectamos el servicio
   private authService = inject(AuthService);
   userRole: string = '';
+
+  ngOnInit() {
+    this.applySavedSettings();
+  }
+
+  private applySavedSettings() {
+    const darkMode = localStorage.getItem('medisupport_dark_mode') === 'true';
+    document.body.classList.toggle('dark', darkMode);
+    document.body.classList.toggle('light', !darkMode);
+    document.documentElement.classList.toggle('ion-palette-dark', darkMode);
+    
+    const textSize = localStorage.getItem('medisupport_text_size') || 'medium';
+    document.body.classList.remove('text-small', 'text-medium', 'text-large');
+    document.body.classList.add('text-' + textSize);
+    document.documentElement.classList.remove('text-small', 'text-medium', 'text-large');
+    document.documentElement.classList.add('text-' + textSize);
+  }
 
   constructor() {
     // Registramos los íconos que usa tu menú
@@ -42,7 +56,6 @@ export class AppComponent {
     this.userRole = user ? user.role : ''
   }
 
-  // 👇 ¡Aquí está la función que nos faltaba! 👇
   closeMenu() {
     this.menuCtrl.close('main-menu');
   }

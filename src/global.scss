@@ -45,13 +45,32 @@ body {
  */
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+@import "@ionic/angular/css/palettes/dark.class.css";
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
+
+/* TEXT SIZES */
+html.text-small,
+body.text-small {
+  font-size: 14px !important;
+  --ion-font-size: 14px;
+}
+
+html.text-medium,
+body.text-medium {
+  font-size: 16px !important;
+  --ion-font-size: 16px;
+}
+
+html.text-large,
+body.text-large {
+  font-size: 18px !important;
+  --ion-font-size: 18px;
+}
 
 /* MODAL DE ROL */
 .role-modal {
   --border-radius: 24px 24px 0 0;
-  --box-shadow: 0 -8px 30px rgba(0,0,0,0.08);
+  --box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
 
   ion-content {
     --background: #ffffff !important;
@@ -105,21 +124,44 @@ body {
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      ion-icon { font-size: 22px; }
+
+      ion-icon {
+        font-size: 22px;
+      }
+
       &.blue {
         background: rgba(20, 93, 160, 0.1);
-        ion-icon { color: #145da0; }
+
+        ion-icon {
+          color: #145da0;
+        }
       }
+
       &.teal {
         background: rgba(42, 173, 160, 0.1);
-        ion-icon { color: #2aada0; }
+
+        ion-icon {
+          color: #2aada0;
+        }
       }
     }
 
     .role-info {
       flex: 1;
-      h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 2px; }
-      p { font-size: 12px; color: #64748b; margin: 0; line-height: 1.35; }
+
+      h4 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 2px;
+      }
+
+      p {
+        font-size: 12px;
+        color: #64748b;
+        margin: 0;
+        line-height: 1.35;
+      }
     }
 
     .check {
@@ -138,8 +180,89 @@ body {
       background: rgba(20, 93, 160, 0.04);
       box-shadow: 0 4px 12px rgba(20, 93, 160, 0.08);
 
-      .check { opacity: 1; transform: scale(1); }
-      .role-info h4 { color: #145da0; }
+      .check {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .role-info h4 {
+        color: #145da0;
+      }
     }
+  }
+}
+
+/* =========================================================
+   GLOBAL DARK MODE — SOFT NAVY (Medical-friendly)
+   ========================================================= */
+html.ion-palette-dark {
+
+  /* Fondos — navy suave, no tan oscuro */
+  ion-content {
+    --background: #243a4e !important;
+  }
+
+  .main-header {
+    --background: rgba(47, 74, 94, 0.95) !important;
+
+    ion-title {
+      color: #e8edf2 !important;
+    }
+  }
+
+  /* Tarjetas — un tono más claro que el fondo */
+  .card-panel,
+  .info-card,
+  .history-item,
+  .auth-card,
+  .role-card,
+  .appointment-card,
+  .auth-wrapper,
+  .settings-group,
+  .profile-header {
+    background: #2f4a5e !important;
+    border-color: #3d5a70 !important;
+    box-shadow: none !important;
+  }
+
+  /* Títulos principales — BLANCOS para legibilidad */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  .result-text {
+    color: #e8edf2 !important;
+  }
+
+  /* Solo section-titles y labels de acento en TEAL */
+  .section-title span,
+  .section-title ion-icon {
+    color: #2aada0 !important;
+  }
+
+  /* Texto secundario — gris azulado amigable */
+  p,
+  .subtitle-text,
+  .history-details span {
+    color: #9bafc4 !important;
+  }
+
+  /* Hero */
+  .hero,
+  .hero-top {
+    background: linear-gradient(160deg, #162536 0%, #243a4e 50%, #243a4e 100%) !important;
+  }
+
+  /* Botón de regresar */
+  ion-back-button,
+  .back-button {
+    color: #e8edf2 !important;
+    --color: #e8edf2 !important;
+  }
+
+  /* Botones */
+  ion-button {
+    --color: #ffffff;
   }
 }
