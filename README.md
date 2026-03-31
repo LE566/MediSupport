@@ -28,12 +28,11 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente en tu sistema:
 
 Para levantar el proyecto en tu computadora, solo abre tu terminal en la carpeta del proyecto y ejecuta estos comandos uno por uno:
 
-```bash
-
 **1. Clonar el repositorio**
 Descarga el código fuente a tu máquina local:
+
 ```bash
-git clone https://github.com/LE566/MediSupport.git
+git clone [https://github.com/LE566/MediSupport.git](https://github.com/LE566/MediSupport.git)
 cd MediSupport
 
 # 2. Instalar todas las dependencias
