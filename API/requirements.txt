@@ -8,5 +8,7 @@ Pillow==10.4.0
 requests==2.31.0
 bcrypt==4.1.2
 cryptography==42.0.5
-# Usaremos una versión específica compatible con Python 3.11
-tensorflow-cpu==2.15.0
+# Flexibilidad en TensorFlow para evitar el error de "No matching distribution"
+tensorflow-cpu>=2.15.0,<2.16.0
+# CRÍTICO: TensorFlow 2.15 no es compatible con NumPy 2.x
+numpy<2.0.0
