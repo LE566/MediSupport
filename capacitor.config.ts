@@ -12,9 +12,9 @@ const config: CapacitorConfig = {
       "insetsHandling":"disable"
     },
     "EdgeToEdge": {
-      backgroundColor: "#145da0",
-      navigationBarColor: "#145da0",
-      statusBarColor: "#145da0",
+      backgroundColor: "#0b3d6e",
+      navigationBarColor: "#0b3d6e",
+      statusBarColor: "#0b3d6e",
     },
   },
 };

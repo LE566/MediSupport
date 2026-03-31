@@ -1,11 +1,12 @@
-Flask
-gunicorn
-Flask-Cors
-Flask-JWT-Extended
-python-dotenv
-pymongo
-Pillow
-requests
-tensorflow-cpu
-bcrypt
-cryptography
+Flask==3.0.2
+gunicorn==21.2.0
+Flask-Cors==4.0.0
+Flask-JWT-Extended==4.6.0
+python-dotenv==1.0.1
+pymongo[srv]==4.6.2
+Pillow==10.2.0
+requests==2.31.0
+bcrypt==4.1.2
+cryptography==42.0.5
+# Usaremos una versión específica compatible con Python 3.11
+tensorflow-cpu==2.15.0
