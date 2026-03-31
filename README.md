@@ -1,4 +1,4 @@
-# MediSupport - AI Mammogram Classifier (Frontend)
+# MediSupport - AI Mammogram Classifier
 
 Esta es la aplicación móvil desarrollada con Ionic y Angular que permite a pacientes y médicos subir imágenes de mamografías para ser evaluadas por un modelo de Inteligencia Artificial (EfficientNet). La aplicación incluye gestión de citas, subida de imágenes desde galería o cámara nativa, y un historial clínico con filtros de privacidad por usuario.
 
