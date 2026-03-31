@@ -33,8 +33,8 @@ Para levantar el proyecto en tu computadora, solo abre tu terminal en la carpeta
 **1. Clonar el repositorio**
 Descarga el código fuente a tu máquina local:
 ```bash
-git clone "Link del repo"
-cd "nombre_repo"
+git clone https://github.com/LE566/MediSupport.git
+cd MediSupport
 
 # 2. Instalar todas las dependencias
 npm install
