@@ -98,6 +98,10 @@
                 <ion-button fill="clear" color="primary" (click)="completeRequest(appt.id)" class="complete-btn">
                   <ion-icon slot="icon-only" name="checkmark-done-outline"></ion-icon>
                 </ion-button>
+                
+                <ion-button fill="clear" color="danger" (click)="confirmCancelAccepted(appt)" class="cancel-btn">
+                  <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+                </ion-button>
               </div>
               
             </div>

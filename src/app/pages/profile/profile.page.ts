@@ -43,7 +43,7 @@ export class ProfilePage implements OnInit {
   // Variables de estado
   isEditing: boolean = false;
   biometricsEnabled: boolean = true;
-  notificationsEnabled: boolean = true;
+  notificationsEnabled: boolean = false;
 
   // Datos del usuario y gestión de imagen
   user: any = null;

@@ -8,12 +8,14 @@ import {
 import { addIcons } from 'ionicons';
 import { 
   menuOutline, personOutline, checkmarkOutline, closeOutline,
-  calendarOutline, timeOutline, checkmarkCircleOutline, checkmarkDoneOutline
+  calendarOutline, timeOutline, checkmarkCircleOutline, checkmarkDoneOutline,
+  closeCircleOutline // 👈 NUEVO ICONO IMPORTADO
 } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { AppointmentService } from '../../services/appointment.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-appointments-doc',
@@ -33,6 +35,7 @@ export class AppointmentsDocPage {
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
   private alertCtrl = inject(AlertController);
+  private cdr = inject(ChangeDetectorRef);
 
   highlightedDates: any[] = [];
   appointmentRequests: any[] = [];
@@ -42,7 +45,8 @@ export class AppointmentsDocPage {
   constructor() {
     addIcons({
       menuOutline, personOutline, checkmarkOutline, closeOutline,
-      calendarOutline, timeOutline, checkmarkCircleOutline, checkmarkDoneOutline
+      calendarOutline, timeOutline, checkmarkCircleOutline, checkmarkDoneOutline,
+      closeCircleOutline // 👈 NUEVO ICONO REGISTRADO
     });
   }
 
@@ -151,7 +155,7 @@ export class AppointmentsDocPage {
     });
   }
 
-  // 3. NUEVO: Función para marcar la cita como completada
+  // 3. Función para marcar la cita como completada
   async completeRequest(id: string) { 
     const loading = await this.loadingCtrl.create({ spinner: 'crescent' });
     await loading.present();
@@ -194,10 +198,10 @@ export class AppointmentsDocPage {
           handler: (data: any) => { 
             if (data.newDate && data.newTime) {
               this.rescheduleRequest(req.id, data.newDate, data.newTime);
-              return true; // 👈 ¡Agrega esto para que TypeScript sea feliz!
+              return true; 
             } else {
               this.showToast('Debes seleccionar fecha y hora', 'warning');
-              return false; // Evita que se cierre la alerta
+              return false; 
             }
           }
         }
@@ -219,6 +223,57 @@ export class AppointmentsDocPage {
       error: () => {
         loading.dismiss();
         this.showToast('Error al reagendar cita', 'danger');
+      }
+    });
+  }
+
+  // --- NUEVAS FUNCIONES PARA CANCELAR CITAS ACEPTADAS ---
+
+  // 1. Muestra una alerta para que no cancelen por accidente
+  async confirmCancelAccepted(appt: any) {
+    const alert = await this.alertCtrl.create({
+      header: 'Cancelar Cita',
+      message: `¿Estás seguro de que deseas cancelar la cita agendada con ${appt.name}?`,
+      buttons: [
+        { text: 'No, mantener', role: 'cancel' },
+        {
+          text: 'Sí, cancelar',
+          role: 'destructive',
+          handler: () => {
+            this.cancelAcceptedRequest(appt.id);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async cancelAcceptedRequest(id: string) {
+    const loading = await this.loadingCtrl.create({ spinner: 'bubbles', message: 'Cancelando cita...' });
+    await loading.present();
+
+    this.appointmentService.updateAppointmentStatus(id, 'cancelled').subscribe({
+      next: () => {
+        loading.dismiss();
+        this.showToast('Cita cancelada exitosamente', 'warning');
+        
+        // 1. Filtramos la lista local para borrarla visualmente
+        this.acceptedAppointments = this.acceptedAppointments.filter(appt => appt.id !== id);
+        
+        // 2. Actualizamos el calendario visualmente
+        this.highlightedDates = this.acceptedAppointments.map((cita: any) => ({
+          date: cita.date,
+          textColor: '#ffffff',
+          backgroundColor: '#2aada0',
+        }));
+
+        // 3. LA MAGIA: Obligamos a la pantalla a redibujarse al instante
+        this.cdr.detectChanges(); 
+        
+      },
+      error: () => {
+        loading.dismiss();
+        this.showToast('Error al cancelar la cita', 'danger');
       }
     });
   }
